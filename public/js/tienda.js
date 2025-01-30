@@ -152,18 +152,18 @@ const productos = [
     new JetPequeno("Bombardier Learjet 75 Liberty", 28000, "Jet compacto y rápido", "imagenes/jets/Bombardier Learjet 75 Liberty.jpg", 9),
 
     // Avionetas. (constructora) +  Alcance en KMs.
-    new Avioneta("Cessna 172 Skyhawk", 5000, "Avioneta de entrenamiento y turismo", "imagenes/jets/Cessna 172 Skyhawk.jpg", 1289),
-    new Avioneta("Piper PA-28 Cherokee", 5500, "Avioneta versátil para viajes cortos", "imagenes/jets/Piper PA-28 Cherokee.jpg", 1389),
-    new Avioneta("Diamond DA40", 4000, "Avioneta ligera y eficiente", "imagenes/jets/Diamond DA40.jpg", 1350),
-    new Avioneta("Beechcraft Bonanza G36", 6000, "Avioneta premium, para los más exigentes", "imagenes/jets/Beechcraft Bonanza G36jpg", 1482),
-    new Avioneta("Mooney M20", 4500, "Avioneta con gran alcance para su precio", "imagenes/jets/Mooney M20.jpg", 1600),
+    new Avioneta("Cessna 172 Skyhawk", 5000, "Avioneta de entrenamiento y turismo", "imagenes/avionetas/Cessna 172 Skyhawk.jpg", 1289),
+    new Avioneta("Piper PA-28 Cherokee", 5500, "Avioneta versátil para viajes cortos", "imagenes/avionetas/Piper PA-28 Cherokee.jpg", 1389),
+    new Avioneta("Diamond DA40", 4000, "Avioneta ligera y eficiente", "imagenes/avionetas/Diamond DA40.jpg", 1350),
+    new Avioneta("Beechcraft Bonanza G36", 6000, "Avioneta premium, para los más exigentes", "imagenes/avionetas/Beechcraft Bonanza G36jpg", 1482),
+    new Avioneta("Mooney M20", 4500, "Avioneta con gran alcance para su precio", "imagenes/avionetas/Mooney M20.jpg", 1600),
 
     // Helicópteros. (constructora) +  Facilidades.
-    new Helicoptero("Robinson R44", 4000, "Helicóptero ligero de entrenamiento", "imagenes/jets/Robinson R44.jpg", ["Wi-Fi"]),
-    new Helicoptero("Bell 407", 7000, "Helicóptero de lujo con gran capacidad", "imagenes/jets/Bell 407.jpg", ["Wi-Fi", "Cámara profesional"]),
-    new Helicoptero("AgustaWestland AW109", 12000, "Helicóptero de rescate y operaciones especiales", "imagenes/jets/AgustaWestland AW109.jpg", ["Wi-Fi"]),
-    new Helicoptero("Sikorsky S-76", 15000, "Helicóptero para transporte de material pesado", "imagenes/jets/Sikorsky S-76.jpg", ["Wi-Fi"]),
-    new Helicoptero("Airbus H125", 8000, "Helicóptero con alto rendimiento", "imagenes/jets/Airbus H125.jpg", ["Wi-Fi"])
+    new Helicoptero("Robinson R44", 4000, "Helicóptero ligero de entrenamiento", "imagenes/helicopteros/Robinson R44.jpg", ["Wi-Fi"]),
+    new Helicoptero("Bell 407", 7000, "Helicóptero de lujo con gran capacidad", "imagenes/helicopteros/Bell 407.jpg", ["Wi-Fi", "Cámara profesional"]),
+    new Helicoptero("AgustaWestland AW109", 12000, "Helicóptero de rescate y operaciones especiales", "imagenes/helicopteros/AgustaWestland AW109.jpg", ["Wi-Fi"]),
+    new Helicoptero("Sikorsky S-76", 15000, "Helicóptero para transporte de material pesado", "imagenes/helicopteros/Sikorsky S-76.jpg", ["Wi-Fi"]),
+    new Helicoptero("Airbus H125", 8000, "Helicóptero con alto rendimiento", "imagenes/helicopteros/Airbus H125.jpg", ["Wi-Fi"])
 ];
 
 //Lista para el carrito
