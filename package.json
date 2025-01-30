@@ -1,0 +1,20 @@
+{
+  "name": "proyectodawe",
+  "version": "1.0.0",
+  "description": "ProyectoDAWE",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Adrimr7/ProyectoDAWE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Adrimr7/ProyectoDAWE/issues"
+  },
+  "homepage": "https://github.com/Adrimr7/ProyectoDAWE#readme"
+}
