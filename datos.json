@@ -1,0 +1,114 @@
+{
+  "jets": [
+    {
+      "nombre": "Gulfstream G650",
+      "fabricante": "Gulfstream",
+      "id" : 1,
+      "modelo": "G650",
+      "alcance_km": 12964,
+      "num_pasajeros": 18,
+      "personal_cabina": 2,
+      "tarifa_base": 55000,
+      "facilidades": ["Wi-Fi", "Asientos reclinables", "Catering gourmet", "Sistema de entretenimiento", "Baño privado"]
+    },
+    {
+      "nombre": "Gulfstream G700",
+      "fabricante": "Gulfstream",
+      "id" : 2,
+      "modelo": "G700",
+      "alcance_km": 13890,
+      "num_pasajeros": 19,
+      "personal_cabina": 3,
+      "tarifa_base": 70000,
+      "facilidades": ["Wi-Fi", "Asientos reclinables", "Catering gourmet", "Sistema de entretenimiento", "Baño privado", "Zona de descanso", "Iluminación ambiental"]
+    },
+    {
+      "nombre": "Gulfstream G500",
+      "fabricante": "Gulfstream",
+      "id" : 3,
+      "modelo": "G500",
+      "alcance_km": 9630,
+      "num_pasajeros": 16,
+      "personal_cabina": 2,
+      "tarifa_base": 45000,
+      "facilidades": ["Wi-Fi", "Catering gourmet", "Baño privado", "Sistema de entretenimiento"]
+    },
+    {
+      "nombre": "Gulfstream G600",
+      "fabricante": "Gulfstream",
+      "id" : 4,
+      "modelo": "G600",
+      "alcance_km": 12274,
+      "num_pasajeros": 19,
+      "personal_cabina": 2,
+      "tarifa_base": 60000,
+      "facilidades": ["Wi-Fi", "Asientos reclinables", "Catering gourmet", "Sistema de entretenimiento", "Baño privado", "Zona de descanso"]
+    },
+    {
+      "nombre": "Gulfstream GIV-SP",
+      "fabricante": "Gulfstream",
+      "id" : 5,
+      "modelo": "GIV-SP",
+      "alcance_km": 7815,
+      "num_pasajeros": 14,
+      "personal_cabina": 2,
+      "tarifa_base": 40000,
+      "facilidades": ["Wi-Fi", "Catering gourmet", "Sistema de entretenimiento"]
+    },
+    {
+      "nombre": "Cessna Citation X+",
+      "fabricante": "Cessna",
+      "id" : 6,
+      "modelo": "Citation X+",
+      "alcance_km": 5956,
+      "num_pasajeros": 12,
+      "personal_cabina": 1,
+      "tarifa_base": 35000,
+      "facilidades": ["Wi-Fi", "Sistema de entretenimiento", "Baño privado"]
+    },
+    {
+      "nombre": "Cessna Citation Longitude",
+      "fabricante": "Cessna",
+      "id" : 7,
+      "modelo": "Citation Longitude",
+      "alcance_km": 6482,
+      "num_pasajeros": 12,
+      "personal_cabina": 1,
+      "tarifa_base": 37000,
+      "facilidades": ["Wi-Fi", "Asientos reclinables", "Sistema de entretenimiento"]
+    },
+    {
+      "nombre": "Cessna Citation CJ4",
+      "fabricante": "Cessna",
+      "id" : 8,
+      "modelo": "Citation CJ4",
+      "alcance_km": 3708,
+      "num_pasajeros": 10,
+      "personal_cabina": 1,
+      "tarifa_base": 28000,
+      "facilidades": ["Wi-Fi", "Sistema de entretenimiento"]
+    },
+    {
+      "nombre": "Bombardier Global 7500",
+      "fabricante": "Bombardier",
+      "id" : 9,
+      "modelo": "Global 7500",
+      "alcance_km": 14260,
+      "num_pasajeros": 19,
+      "personal_cabina": 3,
+      "tarifa_base": 75000,
+      "facilidades": ["Wi-Fi", "Catering gourmet", "Zona de descanso", "Baño privado", "Asientos reclinables", "Iluminación ambiental", "Sistema de entretenimiento"]
+    },
+    {
+      "nombre": "Honda HondaJet Elite",
+      "fabricante": "Honda",
+      "id" : 10,
+      "modelo": "HondaJet Elite",
+      "alcance_km": 2661,
+      "num_pasajeros": 6,
+      "personal_cabina": 1,
+      "tarifa_base": 25000,
+      "facilidades": ["Wi-Fi", "Sistema de entretenimiento"]
+    }
+  ]
+}
