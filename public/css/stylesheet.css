@@ -1,16 +1,12 @@
 body{
-    background-image: url('../imagenes/favicon.ico');
+    background-image: url('../imagenes/patron.png');
     background-repeat: repeat;
 }
 
 .header-content {
     display: flex;
     align-items:center; 
-    justify-content: flex-start; 
-}
-  
-header img {
-    margin-right: 10px; 
+    justify-content: center; 
 }
  
 nav {
