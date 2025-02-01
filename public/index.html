@@ -11,23 +11,25 @@
     <script defer src="carrito.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Nimbus Aviation</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Página de Inicio</a></li>
-                <li><a href="#" data-bs-toggle="offcanvas" data-bs-target="#carritoCanvas">Carrito de la compra</a></li>
-            </ul>
-        </nav>
-    </header>
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="carritoCanvas">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Carrito de la compra</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div id="carrito" class="overflow-auto" style="max-height: 70vh;"></div>
-            <h5 class="mt-3">Total: <span id="total">0</span> €</h5>
+    <div id="content">
+        <header>
+            <h1>Nimbus Aviation</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Página de Inicio</a></li>
+                    <li><a href="#" data-bs-toggle="offcanvas" data-bs-target="#carritoCanvas">Carrito de la compra</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="carritoCanvas">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Carrito de la compra</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div id="carrito" class="overflow-auto" style="max-height: 70vh;"></div>
+                <h5 class="mt-3">Total: <span id="total">0</span> €</h5>
+            </div>
         </div>
     </div>
 </body>

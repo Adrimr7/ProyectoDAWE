@@ -1,6 +1,16 @@
 body{
-    background-image: url('../imagenes/patron.png');
+    background-image: url('../imagenes/patron200.png');
     background-repeat: repeat;
+}
+
+#content{
+    margin: 0 auto;
+    width: 90%;
+    background-color: skyblue;
+    min-height: 100%;
+    margin-bottom: 100px;
+    border-left: 5px outset #333;
+    border-right: 5px outset #333;
 }
 
 .header-content {
