@@ -47,3 +47,18 @@ li a:hover {
     background-color: #111;
 }
 
+.titulo-buscador {
+    display: flex;
+    justify-content: space-between; /* Alinea el título a la izquierda y el input a la derecha */
+    align-items: center;
+    padding: 10px;
+    border-bottom: 2px solid #ddd;
+}
+
+#buscador {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 250px;
+}
