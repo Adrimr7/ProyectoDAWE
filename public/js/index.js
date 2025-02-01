@@ -62,7 +62,7 @@ function renderPagina() {
   renderPaginacion(totalPaginas);
 }
 
-// Primera version
+// Primera version (sin probar)
 function renderPaginacion(totalPaginas) {
   paginacionDiv.innerHTML = "";
   if (paginaActual > 1) {
@@ -80,4 +80,46 @@ window.cambiarPagina = function(nuevaPagina) {
   paginaActual = nuevaPagina;
   renderPagina();
 };
+
+
+// Primera versión, los atributos de los productos no son dinámicos
+const formJet = document.getElementById("formulario-jet");
+formJet.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const tipo = document.getElementById("tipoJet").value;
+  const nombre = document.getElementById("nombre").value;
+  const precio = parseFloat(document.getElementById("precio").value);
+  const descripcion = document.getElementById("descripcion").value;
+  const imagenInput = document.getElementById("imagenJet").files[0];
+  let imagenUrl = imagenInput ? URL.createObjectURL(imagenInput) : null;
+  
+  if (!tipo || !nombre || isNaN(precio)) {
+    alert("Por favor, rellena todos los campos obligatorios.");
+    return;
+  }
+  
+  let nuevoProducto;
+  if (tipo === "Jet Grande") {
+    nuevoProducto = new JetGrande(nombre, precio, descripcion, imagenUrl, 30);
+  } else if (tipo === "Jet Mediano") {
+    nuevoProducto = new JetMediano(nombre, precio, descripcion, imagenUrl, 9000);
+  } else if (tipo === "Jet Pequeño") {
+    nuevoProducto = new JetPequeno(nombre, precio, descripcion, imagenUrl, 8);
+  } else if (tipo === "Avioneta") {
+    nuevoProducto = new Avioneta(nombre, precio, descripcion, imagenUrl, 0);
+  } else if (tipo === "Helicóptero") {
+    nuevoProducto = new Helicoptero(nombre, precio, descripcion, imagenUrl, ["Wi-Fi"]);
+  } else {
+    alert("Tipo de producto no válido");
+    return;
+  }
+  
+  productos.push(nuevoProducto);
+  productosFiltrados = [...productos];
+  paginaActual = 1;
+  renderPagina();
+  alert("Producto agregado con éxito");
+  formJet.reset();
+});
+
   
