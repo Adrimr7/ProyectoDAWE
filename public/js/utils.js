@@ -14,4 +14,32 @@ export function actualizarTitulo() {
     }
 }
 
+export function actualizarCarrito(carrito) {
+    // falta probar con datos
+    const carritoElemento = document.getElementById("carrito");
+    carritoElemento.innerHTML = "";
+    let total = 0;
+
+    for (const item in carrito) {
+        const { precio, cantidad, img } = carrito[item];
+        total += precio * cantidad;
+
+        const div = document.createElement("div");
+        div.classList.add("d-flex", "align-items-center", "mb-3");
+        div.innerHTML = 
+        `
+            <img src="${img}" width="50" class="me-3">
+            <div>
+                <h6>${item}</h6>
+                <p>$${precio} c/u</p>
+                <input type="number" min="1" value="${cantidad}" class="form-control w-50" data-name="${item}">
+                <p>Total: $<span class="item-total">${precio * cantidad}</span></p>
+            </div>
+        `;
+        carritoElemento.appendChild(div);
+    }
+
+    document.getElementById("total").textContent = total;
+}
+
 export const IMAGEN_POR_DEFECTO = "imagenes/default.png";
