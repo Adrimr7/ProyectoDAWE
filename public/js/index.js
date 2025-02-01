@@ -49,4 +49,35 @@ function renderProductos(lista) {
       contenedorProductos.innerHTML += card;
     });
   }
+
+const productosPorPagina = 6;
+let paginaActual = 1;
+
+function renderPagina() {
+  const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
+  const inicio = (paginaActual - 1) * productosPorPagina;
+  const fin = inicio + productosPorPagina;
+  const productosPagina = productosFiltrados.slice(inicio, fin);
+  renderProductos(productosPagina);
+  renderPaginacion(totalPaginas);
+}
+
+// Primera version
+function renderPaginacion(totalPaginas) {
+  paginacionDiv.innerHTML = "";
+  if (paginaActual > 1) {
+    paginacionDiv.innerHTML += `<button class="btn btn-secondary me-2" onclick="cambiarPagina(${paginaActual - 1})">Anterior</button>`;
+  }
+  for (let i = 1; i <= totalPaginas; i++) {
+    paginacionDiv.innerHTML += `<button class="btn ${i === paginaActual ? "btn-primary" : "btn-outline-primary"} me-1" onclick="cambiarPagina(${i})">${i}</button>`;
+  }
+  if (paginaActual < totalPaginas) {
+    paginacionDiv.innerHTML += `<button class="btn btn-secondary" onclick="cambiarPagina(${paginaActual + 1})">Siguiente</button>`;
+  }
+}
+
+window.cambiarPagina = function(nuevaPagina) {
+  paginaActual = nuevaPagina;
+  renderPagina();
+};
   
