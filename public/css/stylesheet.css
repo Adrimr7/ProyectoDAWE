@@ -1,3 +1,6 @@
+html {
+    height: 100%;
+}
 body{
     background-image: url('../imagenes/patron200.png');
     background-repeat: repeat;
@@ -61,4 +64,17 @@ li a:hover {
     border: 1px solid #ccc;
     border-radius: 5px;
     width: 250px;
+}
+
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    margin: 0 auto;
 }
