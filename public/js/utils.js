@@ -3,15 +3,11 @@ export function guidGenerator() {
     return `${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
 }
 
-export function actualizarTitulo() {
-    let input = document.getElementById("buscador").value.trim();
-    let titulo = document.getElementById("titulo");
-
-    if (input === "") {
-        titulo.textContent = "Todos los productos";
-    } else {
-        titulo.textContent = `Buscando por: ${input}`;
-    }
+export function actualizarTitulo(buscador, titulo) {
+    buscador.addEventListener("input", () => {
+        const input = buscador.value.trim();
+        titulo.textContent = input ? `Buscando por: ${input}` : "Todos los productos";
+    });
 }
 
 export function actualizarCarrito(carrito) {

@@ -1,16 +1,18 @@
 import { productos, carrito, JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from './tienda.js';
+import { actualizarCarrito, actualizarTitulo } from './utils.js';
 
 // Variables globales
 let productosFiltrados = [...productos];
 const contenedorProductos = document.getElementById("jets-container");
-const inputBuscador = document.getElementById("buscador");
-const tituloProductos = document.getElementById("titulo-productos");
+const titulo = document.getElementById("titulo");
+const buscador = document.getElementById("buscador");
 const paginacionDiv = document.getElementById("paginacion");
 
 // Configuración inicial de la página
 document.addEventListener("DOMContentLoaded", () => {
   renderPagina();
   actualizarCarrito();
+  actualizarTitulo(buscador, titulo);
 });
 
 function renderProductos(lista) {
