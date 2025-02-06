@@ -10,11 +10,38 @@ const paginacionDiv = document.getElementById("paginacion");
 document.addEventListener("DOMContentLoaded", () => {
   const titulo = document.querySelector("#titulo");
   const buscador = document.querySelector("#buscador");
+  const tipoJet = document.querySelector('#tipoJet');
+  const extraInput = document.querySelector('#extra');
 
   renderPagina();
   actualizarCarrito();
   actualizarTitulo(buscador, titulo);
+
+  tipoJet.value = 'Jet Grande';
+  tipoJet.dispatchEvent(new Event('change'));
+  
+  tipoJet.addEventListener('change', () => {
+    switch (tipoJet.value) {
+      case 'Jet Grande':
+      case 'Jet Mediano':
+      case 'Jet Pequeño':
+        extraInput.placeholder = 'Número de pasajeros';
+        break;
+      case 'Avioneta':
+        extraInput.placeholder = 'Alcance en kilómetros';
+        break;
+      case 'Helicóptero':
+        extraInput.placeholder = 'Facilidades (separadas por comas)';
+        break;
+      default:
+        extraInput.placeholder = 'Atributo extra (cambia dependiendo del tipo)';
+        break;
+    }
+  });
+
 });
+
+
 
 function renderProductos(lista) {
     contenedorProductos.innerHTML = "";
@@ -152,3 +179,29 @@ formJet.addEventListener("submit", (e) => {
 });
 
   
+dropZone.addEventListener('dragover', (event) => {
+  event.preventDefault();
+  dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', (event) => {
+  event.preventDefault();
+  dropZone.classList.remove('dragover');
+
+  const files = event.dataTransfer.files;
+  if (files.length > 0) {
+    imagenJetInput.files = files;
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      dropZone.style.backgroundImage = `url(${e.target.result})`;
+      dropZone.style.backgroundSize = 'cover';
+      dropZone.style.backgroundPosition = 'center';
+    };
+    reader.readAsDataURL(file);
+  }
+});
