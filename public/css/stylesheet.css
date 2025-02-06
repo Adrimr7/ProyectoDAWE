@@ -1,12 +1,12 @@
 html {
     height: 100%;
 }
-body{
+body {
     background-image: url('../imagenes/patron200.png');
     background-repeat: repeat;
 }
 
-#content{
+#content {
     margin: 0 auto;
     width: 90%;
     background-color: skyblue;
@@ -18,10 +18,20 @@ body{
 
 .header-content {
     display: flex;
-    align-items:center; 
+    align-items: center; 
     justify-content: center; 
 }
- 
+
+h1 {
+    font-family: 'Arial', sans-serif;
+    color: #444;
+    padding: 0.9% 0 0.8% 0.9%;
+    font-size: 2.5em;
+    letter-spacing: -0.7%;
+    font-weight: bold;
+    text-align: center;
+}
+
 nav {
     background-color: darkgrey;
 }
