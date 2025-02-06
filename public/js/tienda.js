@@ -169,4 +169,4 @@ const productos = [
 //Lista para el carrito
 const carrito = [];
 
-export { productos, carrito };
+export { productos, carrito, Avioneta, JetGrande, JetMediano, JetPequeno, Helicoptero };
