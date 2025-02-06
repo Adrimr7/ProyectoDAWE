@@ -21,13 +21,13 @@ function renderProductos(lista) {
     lista.forEach(prod => {
       let extra = "";
       if (prod instanceof JetGrande) {
-        extra = `<p class="card-text"><strong>Tamaño:</strong> ${prod.num_pasajeros} m</p>`;
+        extra = `<p class="card-text"><strong>Pasajeros:</strong> ${prod.num_pasajeros} pax</p>`;
       } else if (prod instanceof JetMediano) {
-        extra = `<p class="card-text"><strong>Alcance:</strong> ${prod.num_pasajeros} km</p>`;
+        extra = `<p class="card-text"><strong>Pasajeros:</strong> ${prod.num_pasajeros} pax</p>`;
       } else if (prod instanceof JetPequeno) {
-        extra = `<p class="card-text"><strong>Pasajeros:</strong> ${prod.num_pasajeros}</p>`;
+        extra = `<p class="card-text"><strong>Pasajeros:</strong> ${prod.num_pasajeros} pax</p>`;
       } else if (prod instanceof Avioneta) {
-        extra = `<p class="card-text"><strong>Tripulación:</strong> ${prod.alcance}</p>`;
+        extra = `<p class="card-text"><strong>Alcance:</strong> ${prod.alcance} km</p>`;
       } else if (prod instanceof Helicoptero) {
         extra = `<p class="card-text"><strong>Facilidades:</strong> ${prod.facilidades.join(", ")}</p>`;
       }
