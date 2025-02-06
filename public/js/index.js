@@ -81,39 +81,65 @@ window.cambiarPagina = function(nuevaPagina) {
   renderPagina();
 };
 
-
-// Primera versión, los atributos de los productos no son dinámicos
 const formJet = document.getElementById("formulario-jet");
 formJet.addEventListener("submit", (e) => {
   e.preventDefault();
+
+  // Atributos base
   const tipo = document.getElementById("tipoJet").value;
   const nombre = document.getElementById("nombre").value;
   const precio = parseFloat(document.getElementById("precio").value);
   const descripcion = document.getElementById("descripcion").value;
   const imagenInput = document.getElementById("imagenJet").files[0];
   let imagenUrl = imagenInput ? URL.createObjectURL(imagenInput) : null;
+
+  const extraValue = document.getElementById("extra").value;
   
-  if (!tipo || !nombre || isNaN(precio)) {
+  if (!tipo || !nombre || isNaN(precio) || !extraValue) {
     alert("Por favor, rellena todos los campos obligatorios.");
     return;
   }
   
   let nuevoProducto;
-  if (tipo === "Jet Grande") {
-    nuevoProducto = new JetGrande(nombre, precio, descripcion, imagenUrl, 30);
-  } else if (tipo === "Jet Mediano") {
-    nuevoProducto = new JetMediano(nombre, precio, descripcion, imagenUrl, 9000);
-  } else if (tipo === "Jet Pequeño") {
-    nuevoProducto = new JetPequeno(nombre, precio, descripcion, imagenUrl, 8);
-  } else if (tipo === "Avioneta") {
-    nuevoProducto = new Avioneta(nombre, precio, descripcion, imagenUrl, 0);
-  } else if (tipo === "Helicóptero") {
-    nuevoProducto = new Helicoptero(nombre, precio, descripcion, imagenUrl, ["Wi-Fi"]);
-  } else {
+   // Para los jets el extra es el número de pasajeros (se espera un número)
+   if (tipo === "Jet Grande" || tipo === "Jet Mediano" || tipo === "Jet Pequeño") {
+    const numPasajeros = parseInt(extraValue);
+    if (isNaN(numPasajeros)) {
+      alert("Por favor, ingresa un número válido para el número de pasajeros.");
+      return;
+    }
+    if (tipo === "Jet Grande") {
+      nuevoProducto = new JetGrande(nombre, precio, descripcion, imagenUrl, numPasajeros);
+    } else if (tipo === "Jet Mediano") {
+      nuevoProducto = new JetMediano(nombre, precio, descripcion, imagenUrl, numPasajeros);
+    } else if (tipo === "Jet Pequeño") {
+      nuevoProducto = new JetPequeno(nombre, precio, descripcion, imagenUrl, numPasajeros);
+    }
+  }
+  // Para las avionetas el extra es el alcance en kilómetros (se espera un número)
+  else if (tipo === "Avioneta") {
+    const alcanceKm = parseFloat(extraValue);
+    if (isNaN(alcanceKm)) {
+      alert("Por favor, ingresa un número válido para el alcance en km.");
+      return;
+    }
+    nuevoProducto = new Avioneta(nombre, precio, descripcion, imagenUrl, alcanceKm);
+  }
+  // Para los helicópteros el extra es la lista de facilidades (se ingresan separadas por comas)
+  else if (tipo === "Helicóptero") {
+    const facilidades = extraValue.split(",").map(f => f.trim()).filter(f => f !== "");
+    if (facilidades.length === 0) {
+      alert("Por favor, ingresa al menos una facilidad.");
+      return;
+    }
+    nuevoProducto = new Helicoptero(nombre, precio, descripcion, imagenUrl, facilidades);
+  }
+  else {
     alert("Tipo de producto no válido");
     return;
   }
   
+  // Agregar el nuevo producto a la lista global
   productos.push(nuevoProducto);
   productosFiltrados = [...productos];
   paginaActual = 1;
