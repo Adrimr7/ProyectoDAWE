@@ -4,8 +4,11 @@ export function guidGenerator() {
 }
 
 export function actualizarTitulo(buscador, titulo) {
+    console.log(buscador);
     buscador.addEventListener("input", () => {
         const input = buscador.value.trim();
+        console.log(input);
+        console.log(buscador.innerHTML);
         titulo.textContent = input ? `Buscando por: ${input}` : "Todos los productos";
     });
 }

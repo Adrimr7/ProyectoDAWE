@@ -4,12 +4,13 @@ import { actualizarCarrito, actualizarTitulo } from './utils.js';
 // Variables globales
 let productosFiltrados = [...productos];
 const contenedorProductos = document.getElementById("jets-container");
-const titulo = document.getElementById("titulo");
-const buscador = document.getElementById("buscador");
 const paginacionDiv = document.getElementById("paginacion");
 
 // Configuración inicial de la página
 document.addEventListener("DOMContentLoaded", () => {
+  const titulo = document.querySelector("#titulo");
+  const buscador = document.querySelector("#buscador");
+
   renderPagina();
   actualizarCarrito();
   actualizarTitulo(buscador, titulo);
