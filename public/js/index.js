@@ -1,5 +1,5 @@
 import { productos, carrito, JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from './tienda.js';
-import { actualizarCarrito, actualizarTitulo } from './utils.js';
+import { actualizarCarrito, actualizarTituloYProductos } from './utils.js';
 
 // Variables globales
 let productosFiltrados = [...productos];
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const dropZoneInput = document.getElementById('dropZone');
   renderPagina();
   actualizarCarrito();
-  actualizarTitulo(buscador, titulo);
+  actualizarTituloYProductos(buscador, titulo);
 
   tipoJet.value = 'Jet Grande';
   tipoJet.dispatchEvent(new Event('change'));

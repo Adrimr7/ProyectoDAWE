@@ -3,7 +3,7 @@ export function guidGenerator() {
     return `${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
 }
 
-export function actualizarTitulo(buscador, titulo) {
+export function actualizarTituloYProductos(buscador, titulo) {
     buscador.addEventListener("input", () => {
         const input = buscador.value;
         titulo.textContent = input ? `Buscando por: ${input}` : "Todos los productos";
