@@ -13,8 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const buscador = document.querySelector("#buscador");
   const tipoJet = document.querySelector('#tipoJet');
   const extraInput = document.querySelector('#extra');
-  const dropZoneInput = document.getElementById('#dropZone');
+  const dropZoneInput = document.querySelector('#dropZone');
   const filterButtons = document.querySelectorAll('.btn-group button');
+  console.log(dropZoneInput);
 
   renderPagina();
   actualizarCarrito();
@@ -41,6 +42,25 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
     }
   });
+
+  dropZoneInput.addEventListener("dragenter", dragOver);{
+    console.log("dragenter");
+  }
+  dropZoneInput.addEventListener("dragleave", dragOver);{
+    console.log("dragleave");
+  }
+  dropZoneInput.addEventListener("dragover", dragOver);
+  dropZoneInput.addEventListener("drop", dragOver);
+
+  function dragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.type === "dragover") {
+      dropZone.classList.add("hover");
+    } else {
+      dropZone.classList.remove("hover");
+    }
+  }
 
 });
 
