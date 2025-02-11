@@ -159,10 +159,21 @@ const productosPorPagina = 6;
 let paginaActual = 1;
 
 function renderPagina() {
+  // Calcular el total de páginas
   const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
+  
+  // Asegurarse de que paginaActual esté en el rango válido
+  if (totalPaginas > 0 && paginaActual > totalPaginas) {
+    paginaActual = totalPaginas;
+  }
+  if (paginaActual < 1) {
+    paginaActual = 1;
+  }
+  
   const inicio = (paginaActual - 1) * productosPorPagina;
   const fin = inicio + productosPorPagina;
   const productosPagina = productosFiltrados.slice(inicio, fin);
+  
   renderProductos(productosPagina);
   renderPaginacion(totalPaginas);
 }
@@ -170,16 +181,48 @@ function renderPagina() {
 // Primera version (sin probar)
 function renderPaginacion(totalPaginas) {
   paginacionDiv.innerHTML = "";
+  if (totalPaginas <= 0) return;
+
+  // Botón "Anterior"
   if (paginaActual > 1) {
-    paginacionDiv.innerHTML += `<button class="btn btn-secondary me-2" onclick="cambiarPagina(${paginaActual - 1})">Anterior</button>`;
+    const btnAnterior = document.createElement("button");
+    btnAnterior.className = "btn btn-secondary me-2";
+    btnAnterior.textContent = "Anterior";
+    btnAnterior.addEventListener("click", () => {
+      cambiarPagina(paginaActual - 1);
+    });
+    paginacionDiv.appendChild(btnAnterior);
   }
+
+  // Botones numerados
   for (let i = 1; i <= totalPaginas; i++) {
-    paginacionDiv.innerHTML += `<button class="btn ${i === paginaActual ? "btn-primary" : "btn-outline-primary"} me-1" onclick="cambiarPagina(${i})">${i}</button>`;
+    const btn = document.createElement("button");
+    btn.className = "btn me-1 " + (i === paginaActual ? "btn-primary" : "btn-outline-primary");
+    btn.textContent = i;
+    btn.addEventListener("click", () => {
+      cambiarPagina(i);
+    });
+    paginacionDiv.appendChild(btn);
   }
+
+  // Botón "Siguiente"
   if (paginaActual < totalPaginas) {
-    paginacionDiv.innerHTML += `<button class="btn btn-secondary" onclick="cambiarPagina(${paginaActual + 1})">Siguiente</button>`;
+    const btnSiguiente = document.createElement("button");
+    btnSiguiente.className = "btn btn-secondary";
+    btnSiguiente.textContent = "Siguiente";
+    btnSiguiente.addEventListener("click", () => {
+      cambiarPagina(paginaActual + 1);
+    });
+    paginacionDiv.appendChild(btnSiguiente);
   }
 }
+
+function cambiarPagina(nuevaPagina) {
+  paginaActual = nuevaPagina;
+  renderPagina();
+}
+
+window.cambiarPagina = cambiarPagina;
 
 filterButtons.forEach(button => {
   button.addEventListener('click', () => {
@@ -187,10 +230,7 @@ filterButtons.forEach(button => {
     button.classList.add('btn-selected');
   });
 });
-window.cambiarPagina = function(nuevaPagina) {
-  paginaActual = nuevaPagina;
-  renderPagina();
-};
+
 
 const formJet = document.getElementById("formulario-jet");
 formJet.addEventListener("submit", (e) => {
