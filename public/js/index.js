@@ -1,5 +1,5 @@
 import { productos, carrito, JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from './tienda.js';
-import { actualizarCarrito, actualizarTituloYProductos } from './utils.js';
+import { actualizarCarrito } from './utils.js';
 
 // Variables globales
 let productosFiltrados = [...productos];
@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const buscador = document.querySelector("#buscador");
   const tipoJet = document.querySelector('#tipoJet');
   const extraInput = document.querySelector('#extra');
-  const dropZoneInput = document.getElementById('dropZone');
+  const dropZoneInput = document.getElementById('#dropZone');
+  
   renderPagina();
   actualizarCarrito();
   actualizarTituloYProductos(buscador, titulo);
@@ -41,6 +42,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+
+function actualizarTituloYProductos(buscador, titulo) {
+  buscador.addEventListener("input", () => {
+      const input = buscador.value;
+      titulo.textContent = input ? `Buscando por: ${input}` : "Todos los productos";
+      productosFiltrados = productos.filter((prod) => prod.nombre.toLowerCase().includes(input.toLowerCase()));
+      renderPagina();
+      paginaActual = 1;
+  });
+}
 
 
 function renderProductos(lista) {
