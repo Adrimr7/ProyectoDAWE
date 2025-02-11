@@ -20,6 +20,11 @@ main{
     border-right: 5px solid #333;
 }
 
+.btn-selected {
+    background-color: #333;
+    color: red;
+}
+
 .header-content {
     display: flex;
     align-items: center; 

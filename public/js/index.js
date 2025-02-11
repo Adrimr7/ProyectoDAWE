@@ -5,6 +5,7 @@ import { actualizarCarrito } from './utils.js';
 let productosFiltrados = [...productos];
 const contenedorProductos = document.getElementById("jets-container");
 const paginacionDiv = document.getElementById("paginacion");
+let filtroTipo = null;
 
 // Configuración inicial de la página
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,7 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const tipoJet = document.querySelector('#tipoJet');
   const extraInput = document.querySelector('#extra');
   const dropZoneInput = document.getElementById('#dropZone');
-  
+  const filterButtons = document.querySelectorAll('.btn-group button');
+
   renderPagina();
   actualizarCarrito();
   actualizarTituloYProductos(buscador, titulo);
@@ -42,15 +44,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-
-function actualizarTituloYProductos(buscador, titulo) {
-  buscador.addEventListener("input", () => {
-      const input = buscador.value;
-      titulo.textContent = input ? `Buscando por: ${input}` : "Todos los productos";
-      productosFiltrados = productos.filter((prod) => prod.nombre.toLowerCase().includes(input.toLowerCase()));
-      renderPagina();
-      paginaActual = 1;
+  // Add event listeners to filter buttons
+  document.getElementById('filtro-todos').addEventListener('click', () => {
+    filtroTipo = null;
+    titulo.textContent = "Todos los productos";
+    actualizarTituloYProductos(buscador, titulo, true);
   });
+  document.getElementById('filtro-jet-grande').addEventListener('click', () => {
+    filtroTipo = JetGrande;
+    titulo.textContent = "Buscando Jets Grandes";
+    actualizarTituloYProductos(buscador, titulo, true);
+  });
+  document.getElementById('filtro-jet-mediano').addEventListener('click', () => {
+    filtroTipo = JetMediano;
+    titulo.textContent = "Buscando Jets Medianos";
+    actualizarTituloYProductos(buscador, titulo, true);
+  });
+  document.getElementById('filtro-jet-pequeno').addEventListener('click', () => {
+    filtroTipo = JetPequeno;
+    titulo.textContent = "Buscando Jets Pequeños";
+    actualizarTituloYProductos(buscador, titulo, true);
+  });
+  document.getElementById('filtro-avioneta').addEventListener('click', () => {
+    filtroTipo = Avioneta;
+    titulo.textContent = "Buscando Avionetas";
+    actualizarTituloYProductos(buscador, titulo, true);
+  });
+  document.getElementById('filtro-helicoptero').addEventListener('click', () => {
+    filtroTipo = Helicoptero;
+    titulo.textContent = "Buscando Helicópteros";
+    actualizarTituloYProductos(buscador, titulo, true);
+  });
+
+  // Add event listener to search bar
+  buscador.addEventListener("input", () => {
+    actualizarTituloYProductos(buscador, titulo);
+  });
+
+function actualizarTituloYProductos(buscador, titulo, isFilterClick = false) {
+  const input = buscador.value.toLowerCase();
+  if (!isFilterClick) {
+    titulo.textContent = input ? `Buscando por: ${input}` : "Todos los productos";
+  }
+  
+  // Filtrar productos por nombre y tipo
+  productosFiltrados = productos.filter(producto => 
+    producto.nombre.toLowerCase().includes(input) && (filtroTipo === null || producto instanceof filtroTipo)
+  );
+  
+  // Renderizar la página con los productos filtrados
+  renderPagina();
+  paginaActual = 1;
 }
 
 
@@ -117,6 +161,12 @@ function renderPaginacion(totalPaginas) {
   }
 }
 
+filterButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    filterButtons.forEach(btn => btn.classList.remove('btn-selected'));
+    button.classList.add('btn-selected');
+  });
+});
 window.cambiarPagina = function(nuevaPagina) {
   paginaActual = nuevaPagina;
   renderPagina();
