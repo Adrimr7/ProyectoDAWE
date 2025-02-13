@@ -5,13 +5,12 @@ export function guidGenerator() {
 
 
 export function actualizarCarrito(carrito) {
-    // falta probar con datos
     const carritoElemento = document.getElementById("carrito");
     carritoElemento.innerHTML = "";
     let total = 0;
 
-    for (const item in carrito) {
-        const { precio, cantidad, img } = carrito[item];
+    for (const id in carrito) {
+        const { nombre, precio, cantidad, img } = carrito[id];
         total += precio * cantidad;
 
         const div = document.createElement("div");
@@ -20,9 +19,9 @@ export function actualizarCarrito(carrito) {
         `
             <img src="${img}" width="50" class="me-3">
             <div>
-                <h6>${item}</h6>
+                <h6>${nombre}</h6>
                 <p>$${precio} c/u</p>
-                <input type="number" min="1" value="${cantidad}" class="form-control w-50" data-name="${item}">
+                <input type="number" min="1" max="20" value="${cantidad}" class="form-control w-50" data-id="${id}">
                 <p>Total: $<span class="item-total">${precio * cantidad}</span></p>
             </div>
         `;
