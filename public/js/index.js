@@ -6,6 +6,8 @@ let productosFiltrados = [...productos];
 const contenedorProductos = document.getElementById("jets-container");
 const paginacionDiv = document.getElementById("paginacion");
 let filtroTipo = null;
+const productosPorPagina = 6;
+let paginaActual = 1;
 
 // Configuración inicial de la página
 document.addEventListener("DOMContentLoaded", () => {
@@ -155,8 +157,6 @@ function renderProductos(lista) {
     });
   }
 
-const productosPorPagina = 6;
-let paginaActual = 1;
 
 function renderPagina() {
   // Calcular el total de páginas
