@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const tipoJet = document.querySelector('#tipoJet');
   const extraInput = document.querySelector('#extra');
   const dropZoneInput = document.querySelector('#dropZone');
-  const filterButtons = document.querySelectorAll('.btn-group button');
   console.log(dropZoneInput);
 
   renderPagina();
@@ -67,35 +66,49 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
   // Add event listeners to filter buttons
-  document.getElementById('filtro-todos').addEventListener('click', () => {
-    filtroTipo = null;
-    titulo.textContent = "Todos los productos";
-    actualizarTituloYProductos(buscador, titulo, true);
-  });
-  document.getElementById('filtro-jet-grande').addEventListener('click', () => {
-    filtroTipo = JetGrande;
-    titulo.textContent = "Buscando Jets Grandes";
-    actualizarTituloYProductos(buscador, titulo, true);
-  });
-  document.getElementById('filtro-jet-mediano').addEventListener('click', () => {
-    filtroTipo = JetMediano;
-    titulo.textContent = "Buscando Jets Medianos";
-    actualizarTituloYProductos(buscador, titulo, true);
-  });
-  document.getElementById('filtro-jet-pequeno').addEventListener('click', () => {
-    filtroTipo = JetPequeno;
-    titulo.textContent = "Buscando Jets Pequeños";
-    actualizarTituloYProductos(buscador, titulo, true);
-  });
-  document.getElementById('filtro-avioneta').addEventListener('click', () => {
-    filtroTipo = Avioneta;
-    titulo.textContent = "Buscando Avionetas";
-    actualizarTituloYProductos(buscador, titulo, true);
-  });
-  document.getElementById('filtro-helicoptero').addEventListener('click', () => {
-    filtroTipo = Helicoptero;
-    titulo.textContent = "Buscando Helicópteros";
-    actualizarTituloYProductos(buscador, titulo, true);
+  const filterItems = document.querySelectorAll('.dropdown-item');
+  const dropdownButton = document.querySelector('.btn-group .dropdown-toggle');
+
+  filterItems.forEach(item => {
+    item.addEventListener('click', () => {
+      filterItems.forEach(it => it.classList.remove('active'));
+      item.classList.add('active');
+  
+      const filterValue = item.textContent.trim();
+      dropdownButton.textContent = filterValue;
+      if (filterValue === 'Todos') {
+        titulo.textContent = `Todos los productos`;
+      }
+      else {
+        titulo.textContent = `Buscando: ${filterValue}`;
+      }
+  
+      switch (filterValue) {
+        case 'Todos':
+          filtroTipo = null;
+          break;
+        case 'Jet Grande':
+          filtroTipo = JetGrande;
+          break;
+        case 'Jet Mediano':
+          filtroTipo = JetMediano;
+          break;
+        case 'Jet Pequeño':
+          filtroTipo = JetPequeno;
+          break;
+        case 'Avioneta':
+          filtroTipo = Avioneta;
+          break;
+        case 'Helicóptero':
+          filtroTipo = Helicoptero;
+          break;
+        default:
+          filtroTipo = null;
+          break;
+      }
+  
+      actualizarTituloYProductos(buscador, titulo, true);
+    });
   });
 
   // Add event listener to search bar
@@ -223,13 +236,6 @@ function cambiarPagina(nuevaPagina) {
 }
 
 window.cambiarPagina = cambiarPagina;
-
-filterButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    filterButtons.forEach(btn => btn.classList.remove('btn-selected'));
-    button.classList.add('btn-selected');
-  });
-});
 
 
 const formJet = document.getElementById("formulario-jet");

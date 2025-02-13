@@ -41,23 +41,28 @@
     </div>
     <div class="container mt-4">
         <div class="row">
-          <main class="col-md-8">
-          <div class="titulo-buscador mb-3">
-            <h2 id="titulo">Todos los productos</h2>
-            <input type="text" id="buscador" class="form-control" placeholder="Buscar productos...">
-            <div class="btn-group mt-2" role="group" aria-label="Filtros de tipo">
-              <button type="button" class="btn btn-outline-primary" id="filtro-todos">Todos</button>
-              <button type="button" class="btn btn-outline-primary" id="filtro-jet-grande">Jet Grande</button>
-              <button type="button" class="btn btn-outline-primary" id="filtro-jet-mediano">Jet Mediano</button>
-              <button type="button" class="btn btn-outline-primary" id="filtro-jet-pequeno">Jet Pequeño</button>
-              <button type="button" class="btn btn-outline-primary" id="filtro-avioneta">Avioneta</button>
-              <button type="button" class="btn btn-outline-primary" id="filtro-helicoptero">Helicóptero</button>
+        <main class="col-md-8">
+            <div class="titulo-buscador mb-3">
+              <h2 id="titulo">Todos los productos</h2>
+              <input type="text" id="buscador" class="form-control" placeholder="Buscar productos...">
+              <div class="btn-group mt-2" role="group" aria-label="Filtros de tipo" aria-colspan="">
+                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Filtrar por tipo
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#" id="filtro-todos">Todos</a></li>
+                  <li><a class="dropdown-item" href="#" id="filtro-jet-grande">Jet Grande</a></li>
+                  <li><a class="dropdown-item" href="#" id="filtro-jet-mediano">Jet Mediano</a></li>
+                  <li><a class="dropdown-item" href="#" id="filtro-jet-pequeno">Jet Pequeño</a></li>
+                  <li><a class="dropdown-item" href="#" id="filtro-avioneta">Avioneta</a></li>
+                  <li><a class="dropdown-item" href="#" id="filtro-helicoptero">Helicóptero</a></li>
+                </ul>
+              </div>
             </div>
-          </div>
             <div id="jets-container" class="row"></div>
             <div id="paginacion" class="text-center mt-4"></div>
           </main>
-      
+          
           <aside class="col-md-4 mt-4">
             <h2>Agregar un Producto</h2>
             <form id="formulario-jet">
@@ -94,7 +99,7 @@
               <button type="submit" class="btn btn-primary">Agregar Producto</button>
             </form>
           </aside>
-        </div>
+        
       </div>
     
     <footer class="bg-dark text-white text-center p-3 mt-4">
