@@ -254,7 +254,7 @@ formJet.addEventListener("submit", (e) => {
   const nombre = document.getElementById("nombre").value;
   const precio = parseFloat(document.getElementById("precio").value);
   const descripcion = document.getElementById("descripcion").value;
-  const imagenInput = document.getElementById("dropZone").files[0];
+  const imagenInput = document.getElementById("imagenJet").files[0];
   let imagenUrl = imagenInput ? URL.createObjectURL(imagenInput) : null;
 
   const extraValue = document.getElementById("extra").value;
