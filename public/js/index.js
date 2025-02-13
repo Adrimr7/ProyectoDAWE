@@ -90,6 +90,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       actualizarCarrito(carrito);
+    } else if (event.target.classList.contains("product-image")) {
+      const imgSrc = event.target.src;
+      const description = event.target.dataset.description;
+      const modalImage = document.getElementById("modalImage");
+      const modalDescription = document.getElementById("modalDescription");
+      const productModal = new bootstrap.Modal(document.getElementById("productModal"));
+
+      modalImage.src = imgSrc;
+      modalDescription.textContent = description;
+      productModal.show();
     }
   });
 
@@ -185,7 +195,7 @@ function renderProductos(lista) {
     const card = `
       <div class="col-md-4 mb-3">
         <div class="card h-100">
-          <img src="${prod.imagen}" class="card-img-top" alt="${prod.nombre}">
+          <img src="${prod.imagen}" class="card-img-top product-image" alt="${prod.nombre}" data-description="${prod.descripcion}">
           <div class="card-body">
             <h5 class="card-title">${prod.nombre}</h5>
             <p class="card-text text-truncate">${prod.descripcion}</p>
