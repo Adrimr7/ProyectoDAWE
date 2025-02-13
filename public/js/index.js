@@ -8,7 +8,7 @@ const paginacionDiv = document.getElementById("paginacion");
 let filtroTipo = null;
 const productosPorPagina = 6;
 let paginaActual = 1;
-
+let filtroPrecio = 100000000;
 // Configuración inicial de la página
 document.addEventListener("DOMContentLoaded", () => {
   const titulo = document.querySelector("#titulo");
@@ -131,7 +131,7 @@ function actualizarTituloYProductos(buscador, titulo, isFilterClick = false) {
   
   // Filtrar productos por nombre y tipo
   productosFiltrados = productos.filter(producto => 
-    producto.nombre.toLowerCase().includes(input) && (filtroTipo === null || producto instanceof filtroTipo)
+    producto.nombre.toLowerCase().includes(input) && (filtroTipo === null || producto instanceof filtroTipo) && producto.precio <= filtroPrecio
   );
   
   // Renderizar la página con los productos filtrados
@@ -312,7 +312,18 @@ formJet.addEventListener("submit", (e) => {
   formJet.reset();
 });
 
+const rangoPrecio = document.getElementById('rangoPrecio');
+const rangoPrecioValue = document.getElementById('rangoPrecioValue');
+
+rangoPrecio.addEventListener('input', () => {
+  filtroPrecio = parseInt(rangoPrecio.value);
+  rangoPrecioValue.textContent = rangoPrecio.toLocaleString();
+  actualizarTituloYProductos(buscador, titulo, true);
+});
+
 /**
+
+  
 dropZone.addEventListener('dragover', (event) => {
   event.preventDefault();
   dropZone.classList.add('dragover');
