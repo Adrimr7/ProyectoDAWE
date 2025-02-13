@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tipoJet = document.querySelector('#tipoJet');
   const extraInput = document.querySelector('#extra');
   const dropZoneInput = document.querySelector('#dropZone');
+  const selectorImagen = document.querySelector('#imagenJet');
   console.log(dropZoneInput);
 
   renderPagina();
@@ -44,25 +45,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  dropZoneInput.addEventListener("dragenter", dragOver);{
-    console.log("dragenter");
-  }
-  dropZoneInput.addEventListener("dragleave", dragOver);{
-    console.log("dragleave");
-  }
+  dropZoneInput.addEventListener("dragenter", dragOver);
+  dropZoneInput.addEventListener("dragleave", dragOver);
   dropZoneInput.addEventListener("dragover", dragOver);
-  dropZoneInput.addEventListener("drop", dragOver);
+  dropZoneInput.addEventListener("drop", gestorFicheros);
 
   function dragOver(event) {
     event.preventDefault();
     event.stopPropagation();
-    if (event.type === "dragover") {
-      dropZone.classList.add("hover");
-    } else {
-      dropZone.classList.remove("hover");
-    }
+    event.target.className = (event.type === "dragover" ? "dragover" : "");
   }
 
+  function gestorFicheros(event){
+    dragOver(event);
+    let files = event.target.files || event.dataTransfer.files;
+    for (let i = 0, f; f = files[i]; i++) {
+      parsearFichero(f);
+    }      
+  }
+  function parsearFichero(file) {
+    dropZoneInput.innerHTML='';
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    selectorImagen.files = dataTransfer.files;
+  }
+    
 });
 
   // Add event listeners to filter buttons
@@ -305,7 +312,7 @@ formJet.addEventListener("submit", (e) => {
   formJet.reset();
 });
 
-  
+/**
 dropZone.addEventListener('dragover', (event) => {
   event.preventDefault();
   dropZone.classList.add('dragover');
@@ -332,3 +339,4 @@ dropZone.addEventListener('drop', (event) => {
     reader.readAsDataURL(file);
   }
 });
+**/
