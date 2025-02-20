@@ -26,7 +26,7 @@ export function actualizarCarrito(carrito) {
             <div>
                 <h6>${nombre}</h6>
                 <p>$${precio} c/u</p>
-                <input type="number" min="0" max="20" value="${cantidad}" class="form-control w-50 cantidad-input" data-id="${id}">
+                <input type="number" min="0" max="21" value="${cantidad}" class="form-control w-50 cantidad-input" data-id="${id}">
                 <p>Total: $<span class="item-total">${precio * cantidad}</span></p>
                 <small class="text-danger mensaje-max d-none">Máximo alcanzado</small>
             </div>
@@ -45,11 +45,14 @@ export function actualizarCarrito(carrito) {
             const max = parseInt(this.max);
             const mensaje = this.parentElement.querySelector(".mensaje-max");
 
-            if (cantidad > max) {
+            if (cantidad >= max) {
                 this.value = max;
                 carrito[id].cantidad = max;
-                setTimeout(() => mensaje.classList.add("d-none"), 2000);
+                setTimeout(() => 
+                    mensaje.classList.add("d-none")
+                , 2000);
                 mensaje.classList.remove("d-none");
+  
             } else if (cantidad === 0) {
                 delete carrito[id]; // Elimina el producto si su cantidad es 0
                 actualizarCarrito(carrito); // Refresca el carrito
