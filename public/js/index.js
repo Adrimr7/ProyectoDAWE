@@ -338,6 +338,6 @@ const rangoPrecioValue = document.getElementById('rangoPrecioValue');
 
 rangoPrecio.addEventListener('input', () => {
   filtroPrecio = parseInt(rangoPrecio.value);
-  rangoPrecioValue.textContent = rangoPrecio.toLocaleString();
+  rangoPrecioValue.textContent = filtroPrecio;
   actualizarTituloYProductos(buscador, titulo, true);
 });
