@@ -25,6 +25,10 @@ main {
     color: red;
 }
 
+.agregar-carrito img {
+    pointer-events: none;
+  }
+
 .header-content {
     display: flex;
     align-items: center; 

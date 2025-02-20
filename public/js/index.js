@@ -87,16 +87,26 @@ document.addEventListener("DOMContentLoaded", () => {
       const nombre = button.dataset.nombre;
       const precio = parseFloat(button.dataset.precio);
       const img = button.dataset.img;
-
+  
       console.log({ id, nombre, precio, img });
-
+  
       if (!carrito[id]) {
         carrito[id] = { nombre, precio, cantidad: 1, img };
       } else if (carrito[id].cantidad < 20) {
         carrito[id].cantidad++;
       }
-
+  
       actualizarCarrito(carrito);
+  
+      // Hide the button and show "Añadido" text for 2 seconds
+      const originalButtonContent = button.innerHTML;
+      button.innerHTML = 'Añadido!';
+      button.disabled = true;
+  
+      setTimeout(() => {
+        button.innerHTML = originalButtonContent;
+        button.disabled = false;
+      }, 2000);
     } else if (event.target.classList.contains("product-image")) {
       const imgSrc = event.target.src;
       const description = event.target.dataset.description;
@@ -107,35 +117,35 @@ document.addEventListener("DOMContentLoaded", () => {
       const modalPrice = document.getElementById("modalPrice"); // Nuevo elemento para el precio
       const productModal = new bootstrap.Modal(document.getElementById("productModal"));
       console.log({ imgSrc, description, nombre });
-
+  
       // Buscar el producto en la lista de productos
       const prod = productos.find(p => p.nombre === nombre);
-
+  
       if (!prod) {
         console.error("Producto no encontrado:", nombre);
         return;
       }
-
+  
       // Generar los atributos según el tipo de producto
       let extra = "";
       if (prod instanceof JetGrande || prod instanceof JetMediano || prod instanceof JetPequeno) {
         extra = `<p><strong>Pasajeros:</strong> ${prod.num_pasajeros} pax</p>`;
-      }   else if (prod instanceof Avioneta) {
+      } else if (prod instanceof Avioneta) {
         extra = `<p><strong>Alcance:</strong> ${prod.alcance} km</p>`;
-      }   else if (prod instanceof Helicoptero) {
+      } else if (prod instanceof Helicoptero) {
         extra = `<p><strong>Facilidades:</strong> ${prod.facilidades.join(", ")}</p>`;
       }
-
+  
       // Asignar valores al modal
       modalImage.src = imgSrc;
       modalDescription.textContent = description;
       modalAttributes.innerHTML = `${extra}`; // Atributo específico
       modalPrice.innerHTML = `<p><strong>Precio:</strong> $${prod.precio.toLocaleString()}</p>`; // Precio
       document.getElementById("productModalLabel").textContent = nombre;
-
+  
       productModal.show();
     }
-});
+  });
 
 
   document.getElementById("carrito").addEventListener("input", (event) => {
@@ -229,27 +239,16 @@ function renderProductos(lista) {
     }
     const card = `
       <div class="col-md-4 mb-3">
-        <div class="card h-100">
-          <img src="${prod.imagen}" class="card-img-top product-image" 
-               alt="${prod.nombre}" 
-               data-description="${prod.descripcion}" 
-               data-nombre="${prod.nombre}"
-               data-precio="${prod.precio}"
-               data-attributes="${extra.replace(/<[^>]+>/g, '')}"> 
+        <div class="card h-100 position-relative">
+          <img src="${prod.imagen}" class="card-img-top product-image" alt="${prod.nombre}" data-description="${prod.descripcion}">
+          <button class="btn btn-success agregar-carrito position-absolute top-0 end-0 m-2" data-id="${prod.id}" data-nombre="${prod.nombre}" data-precio="${prod.precio}" data-img="${prod.imagen}">
+            <img src="imagenes/carrito.png" alt="Añadir al carrito" style="width: 24px; height: 24px;">
+          </button>
           <div class="card-body">
             <h5 class="card-title">${prod.nombre}</h5>
             <p class="card-text text-truncate">${prod.descripcion}</p>
             <p class="card-text"><strong>Precio:</strong> $${prod.precio.toLocaleString()}</p>
             ${extra}
-          </div>
-          <div class="card-footer text-end">
-            <button class="btn btn-success agregar-carrito" 
-                    data-id="${prod.id}" 
-                    data-nombre="${prod.nombre}" 
-                    data-precio="${prod.precio}" 
-                    data-img="${prod.imagen}">
-              <i class="bi bi-cart"></i> Añadir al carrito
-            </button>
           </div>
         </div>
       </div>
@@ -393,7 +392,7 @@ function convertToInternationalCurrencySystem (labelValue) {
   return Math.abs(Number(labelValue)) >= 1.0e+6
 
   ? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + "M"
-  // Three Zeroes for Thousands
+
   : Math.abs(Number(labelValue)) >= 1.0e+3
 
   ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + "K"
