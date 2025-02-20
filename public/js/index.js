@@ -66,7 +66,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }      
   }
   function parsearFichero(file) {
-    dropZoneInput.innerHTML='';
+    dropZoneInput.className = "border border-primary text-center p-3 mb-2";
+    const mensajeOriginal = dropZoneInput.innerHTML; // Guarda el contenido original
+    dropZoneInput.innerHTML = 'Elemento añadido'; // Muestra el mensaje de feedback
+
+    setTimeout(() => {
+        dropZoneInput.innerHTML = mensajeOriginal; // Restaura el mensaje original después de 1.5 segundos
+    }, 1500);
+    
     const dataTransfer = new DataTransfer();
     dataTransfer.items.add(file);
     selectorImagen.files = dataTransfer.files;
