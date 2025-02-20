@@ -100,15 +100,43 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (event.target.classList.contains("product-image")) {
       const imgSrc = event.target.src;
       const description = event.target.dataset.description;
+      const nombre = event.target.dataset.nombre;
       const modalImage = document.getElementById("modalImage");
       const modalDescription = document.getElementById("modalDescription");
+      const modalAttributes = document.getElementById("modalAttributes");
+      const modalPrice = document.getElementById("modalPrice"); // Nuevo elemento para el precio
       const productModal = new bootstrap.Modal(document.getElementById("productModal"));
+      console.log({ imgSrc, description, nombre });
 
+      // Buscar el producto en la lista de productos
+      const prod = productos.find(p => p.nombre === nombre);
+
+      if (!prod) {
+        console.error("Producto no encontrado:", nombre);
+        return;
+      }
+
+      // Generar los atributos según el tipo de producto
+      let extra = "";
+      if (prod instanceof JetGrande || prod instanceof JetMediano || prod instanceof JetPequeno) {
+        extra = `<p><strong>Pasajeros:</strong> ${prod.num_pasajeros} pax</p>`;
+      }   else if (prod instanceof Avioneta) {
+        extra = `<p><strong>Alcance:</strong> ${prod.alcance} km</p>`;
+      }   else if (prod instanceof Helicoptero) {
+        extra = `<p><strong>Facilidades:</strong> ${prod.facilidades.join(", ")}</p>`;
+      }
+
+      // Asignar valores al modal
       modalImage.src = imgSrc;
       modalDescription.textContent = description;
+      modalAttributes.innerHTML = `${extra}`; // Atributo específico
+      modalPrice.innerHTML = `<p><strong>Precio:</strong> $${prod.precio.toLocaleString()}</p>`; // Precio
+      document.getElementById("productModalLabel").textContent = nombre;
+
       productModal.show();
     }
-  });
+});
+
 
   document.getElementById("carrito").addEventListener("input", (event) => {
     if (event.target.type === "number") {
@@ -202,7 +230,12 @@ function renderProductos(lista) {
     const card = `
       <div class="col-md-4 mb-3">
         <div class="card h-100">
-          <img src="${prod.imagen}" class="card-img-top product-image" alt="${prod.nombre}" data-description="${prod.descripcion}">
+          <img src="${prod.imagen}" class="card-img-top product-image" 
+               alt="${prod.nombre}" 
+               data-description="${prod.descripcion}" 
+               data-nombre="${prod.nombre}"
+               data-precio="${prod.precio}"
+               data-attributes="${extra.replace(/<[^>]+>/g, '')}"> 
           <div class="card-body">
             <h5 class="card-title">${prod.nombre}</h5>
             <p class="card-text text-truncate">${prod.descripcion}</p>
@@ -210,7 +243,11 @@ function renderProductos(lista) {
             ${extra}
           </div>
           <div class="card-footer text-end">
-            <button class="btn btn-success agregar-carrito" data-id="${prod.id}" data-nombre="${prod.nombre}" data-precio="${prod.precio}" data-img="${prod.imagen}">
+            <button class="btn btn-success agregar-carrito" 
+                    data-id="${prod.id}" 
+                    data-nombre="${prod.nombre}" 
+                    data-precio="${prod.precio}" 
+                    data-img="${prod.imagen}">
               <i class="bi bi-cart"></i> Añadir al carrito
             </button>
           </div>
@@ -220,6 +257,7 @@ function renderProductos(lista) {
     contenedorProductos.innerHTML += card;
   });
 }
+
 
 function renderPagina() {
   const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
