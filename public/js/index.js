@@ -338,6 +338,21 @@ const rangoPrecioValue = document.getElementById('rangoPrecioValue');
 
 rangoPrecio.addEventListener('input', () => {
   filtroPrecio = parseInt(rangoPrecio.value);
-  rangoPrecioValue.textContent = filtroPrecio;
+  rangoPrecioValue.textContent = convertToInternationalCurrencySystem(filtroPrecio);
   actualizarTituloYProductos(buscador, titulo, true);
 });
+
+
+function convertToInternationalCurrencySystem (labelValue) {
+
+  return Math.abs(Number(labelValue)) >= 1.0e+6
+
+  ? (Math.abs(Number(labelValue)) / 1.0e+6).toFixed(2) + "M"
+  // Three Zeroes for Thousands
+  : Math.abs(Number(labelValue)) >= 1.0e+3
+
+  ? (Math.abs(Number(labelValue)) / 1.0e+3).toFixed(2) + "K"
+
+  : Math.abs(Number(labelValue));
+
+}
