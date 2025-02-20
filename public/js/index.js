@@ -240,8 +240,14 @@ function renderProductos(lista) {
     const card = `
       <div class="col-md-4 mb-3">
         <div class="card h-100 position-relative">
-          <img src="${prod.imagen}" class="card-img-top product-image" alt="${prod.nombre}" data-description="${prod.descripcion}">
+          <img src="${prod.imagen}" class="card-img-top product-image" 
+          alt="${prod.nombre}" 
+          data-description="${prod.descripcion}" 
+          data-nombre="${prod.nombre}"
+          data-precio="${prod.precio}"
+          data-attributes="${extra.replace(/<[^>]+>/g, '')}">
           <button class="btn btn-success agregar-carrito position-absolute top-0 end-0 m-2" data-id="${prod.id}" data-nombre="${prod.nombre}" data-precio="${prod.precio}" data-img="${prod.imagen}">
+            <i class="bi bi-cart"></i>
             <img src="imagenes/carrito.png" alt="Añadir al carrito" style="width: 24px; height: 24px;">
           </button>
           <div class="card-body">
