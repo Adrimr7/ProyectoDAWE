@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const extraInput = document.querySelector('#extra');
   const dropZoneInput = document.querySelector('#dropZone');
   const selectorImagen = document.querySelector('#imagenJet');
-  console.log(dropZoneInput);
 
   renderPagina();
   actualizarCarrito(carrito);
@@ -88,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const precio = parseFloat(button.dataset.precio);
       const img = button.dataset.img;
   
-      console.log({ id, nombre, precio, img });
   
       if (!carrito[id]) {
         carrito[id] = { nombre, precio, cantidad: 1, img };
@@ -116,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const modalAttributes = document.getElementById("modalAttributes");
       const modalPrice = document.getElementById("modalPrice"); // Nuevo elemento para el precio
       const productModal = new bootstrap.Modal(document.getElementById("productModal"));
-      console.log({ imgSrc, description, nombre });
   
       // Buscar el producto en la lista de productos
       const prod = productos.find(p => p.nombre === nombre);

@@ -47,12 +47,13 @@ export function actualizarCarrito(carrito) {
 
             if (cantidad >= max) {
                 this.value = max;
-                carrito[id].cantidad = max;
-                setTimeout(() => 
-                    mensaje.classList.add("d-none")
-                , 2000);
                 mensaje.classList.remove("d-none");
-  
+                setTimeout(() => {
+                    this.value = max - 1;
+                    carrito[id].cantidad = max - 1;
+                    mensaje.classList.add("d-none");
+                    actualizarCarrito(carrito);
+                }, 2000);  
             } else if (cantidad === 0) {
                 delete carrito[id]; // Elimina el producto si su cantidad es 0
                 actualizarCarrito(carrito); // Refresca el carrito
