@@ -376,7 +376,13 @@ formJet.addEventListener("submit", (e) => {
   productosFiltrados = [...productos];
   paginaActual = 1;
   renderPagina();
-  alert("Producto agregado con éxito");
+  // Mostrar mensaje de éxito
+  const mensajeExito = document.getElementById("mensaje-exito");
+  mensajeExito.classList.remove("d-none");
+
+  setTimeout(() => {
+    mensajeExito.classList.add("d-none");
+  }, 2000);
   formJet.reset();
 });
 
