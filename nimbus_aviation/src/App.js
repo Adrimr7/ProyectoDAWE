@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Cabecera from "./componentes/Cabecera"
 import EscaparateProductos from "./componentes/EscaparateProductos"
 import FormularioNuevosProductos from "./componentes/FormularioNuevosProductos"
 import Pie from "./componentes/Pie"
 import Carrito from "./componentes/Carrito"
-import { productos as initialProductos } from "./tienda/tienda"
+import { productos as initialProductos, guardarEnCarrito, borrarDelCarrito, cargarCarrito } from "./tienda/tienda"
 import "./App.css"
 
 function App() {
@@ -16,6 +16,19 @@ function App() {
   const [filtroPrecio, setFiltroPrecio] = useState(120000000)
   const [searchTerm, setSearchTerm] = useState("")
   const [showCart, setShowCart] = useState(false)
+
+  // 🔹 Cargar el carrito desde localStorage al inicio
+  useEffect(() => {
+    const carritoCargado = cargarCarrito()
+    setCarrito(carritoCargado)
+  }, [])
+
+  // 🔹 Guardar el carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    Object.keys(carrito).forEach((productoId) => {
+      guardarEnCarrito(productoId, carrito[productoId])
+    })
+  }, [carrito])
 
   const addToCart = (product) => {
     setCarrito((prevCarrito) => {
@@ -30,6 +43,8 @@ function App() {
       } else if (newCarrito[product.id].cantidad < 20) {
         newCarrito[product.id].cantidad++
       }
+
+      guardarEnCarrito(product.id, newCarrito[product.id]) // Guardar en localStorage
       return newCarrito
     })
   }
@@ -39,8 +54,10 @@ function App() {
       const newCarrito = { ...prevCarrito }
       if (cantidad <= 0) {
         delete newCarrito[id]
+        borrarDelCarrito(id) // Borrar del localStorage si se elimina el producto
       } else {
         newCarrito[id].cantidad = cantidad
+        guardarEnCarrito(id, newCarrito[id]) // Guardar cambios en localStorage
       }
       return newCarrito
     })
@@ -83,4 +100,3 @@ function App() {
 }
 
 export default App
-

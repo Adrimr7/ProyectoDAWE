@@ -4,6 +4,10 @@ import JetPequeno from "./jetPequeno"
 import Helicoptero from "./helicoptero"
 import Avioneta from "./avioneta"
 
+const DIVISA = "€"; // Símbolo de la divisa
+const MAX_COPIAS = 20; // Máximo de copias en el carrito
+
+
 // Create the products array with the same data as the original
 const productos = [
   // Jets Grandes
@@ -206,6 +210,28 @@ const productos = [
   ),
 ]
 
+// 🔹 Guarda o actualiza un producto en el carrito
+export function guardarEnCarrito(productoId, producto) {
+  localStorage.setItem(`producto_${productoId}`, JSON.stringify(producto));
+}
+
+// 🔹 Borra un producto del carrito
+export function borrarDelCarrito(productoId) {
+  localStorage.removeItem(`producto_${productoId}`);
+}
+
+// 🔹 Carga el carrito desde localStorage
+export function cargarCarrito() {
+  const carrito = {};
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith("producto_")) {
+      const producto = JSON.parse(localStorage.getItem(key));
+      carrito[key.replace("producto_", "")] = producto;
+    }
+  });
+  return carrito;
+}
+
 // Helper function to check if an object is an instance of a specific constructor
 // const isInstanceOf = (obj, constructor) => {
 //   return obj && Object.getPrototypeOf(obj) === constructor.prototype
@@ -229,5 +255,5 @@ Helicoptero.prototype.isHelicoptero = true
 //   return originalInstanceof.call(this, obj)
 // }
 
-export { productos, JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero }
+export { productos, JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero, DIVISA, MAX_COPIAS }
 
