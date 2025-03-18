@@ -207,9 +207,9 @@ const productos = [
 ]
 
 // Helper function to check if an object is an instance of a specific constructor
-const isInstanceOf = (obj, constructor) => {
-  return obj && Object.getPrototypeOf(obj) === constructor.prototype
-}
+// const isInstanceOf = (obj, constructor) => {
+//   return obj && Object.getPrototypeOf(obj) === constructor.prototype
+// }
 
 // Add instanceof support for all product types
 JetGrande.prototype.isJetGrande = true
@@ -219,15 +219,15 @@ Avioneta.prototype.isAvioneta = true
 Helicoptero.prototype.isHelicoptero = true
 
 // Override instanceof operator
-const originalInstanceof = Function.prototype[Symbol.hasInstance]
-Function.prototype[Symbol.hasInstance] = function (obj) {
-  if (this === JetGrande && obj && obj.isJetGrande) return true
-  if (this === JetMediano && obj && obj.isJetMediano) return true
-  if (this === JetPequeno && obj && obj.isJetPequeno) return true
-  if (this === Avioneta && obj && obj.isAvioneta) return true
-  if (this === Helicoptero && obj && obj.isHelicoptero) return true
-  return originalInstanceof.call(this, obj)
-}
+// const originalInstanceof = Function.prototype[Symbol.hasInstance]
+// Function.prototype[Symbol.hasInstance] = function (obj) {
+//   if (this === JetGrande && obj && obj.isJetGrande) return true
+//   if (this === JetMediano && obj && obj.isJetMediano) return true
+//   if (this === JetPequeno && obj && obj.isJetPequeno) return true
+//   if (this === Avioneta && obj && obj.isAvioneta) return true
+//   if (this === Helicoptero && obj && obj.isHelicoptero) return true
+//   return originalInstanceof.call(this, obj)
+// }
 
 export { productos, JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero }
 

@@ -138,7 +138,7 @@ function EscaparateProductos({
             data-precio={product.precio}
             data-img={product.imagen}
           >
-            <img src="imagenes/carrito.png" alt="Añadir al carrito" style={{ width: "24px", height: "24px" }} />
+            <img src="../imagenes/carrito.png" alt="Añadir al carrito" style={{ width: "24px", height: "24px" }} />
           </button>
           <div className="card-body">
             <h5 className="card-title">{product.nombre}</h5>
