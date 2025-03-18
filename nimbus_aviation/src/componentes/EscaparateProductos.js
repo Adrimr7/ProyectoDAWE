@@ -249,7 +249,7 @@ function EscaparateProductos({
 
       <div className="mt-2">
         <label htmlFor="rangoPrecio" className="form-label">
-          Filtrar por precio: <span id="rangoPrecioValue">{convertToInternationalCurrencySystem(filtroPrecio)}</span> $
+          Filtrar por precio máximo: <span id="rangoPrecioValue">{convertToInternationalCurrencySystem(filtroPrecio)}</span> $
         </label>
         <input
           type="range"
