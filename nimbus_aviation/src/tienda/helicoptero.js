@@ -10,6 +10,7 @@ function Helicoptero(nombre, precio, descripcion, imagen, facilidades) {
   // Return the enhanced object with helicoptero-specific properties
   return {
     ...producto,
+    tipo: "helicoptero",
 
     // Add getters and setters for facilidades
     get facilidades() {

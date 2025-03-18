@@ -27,7 +27,7 @@ function EscaparateProductos({
     const filtered = productos.filter(
       (producto) =>
         producto.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (filtroTipo === null || producto instanceof filtroTipo) &&
+        (filtroTipo === null || producto.tipo === filtroTipo) && // Cambia esta línea
         producto.precio <= filtroPrecio,
     )
 
@@ -45,11 +45,11 @@ function EscaparateProductos({
   }, [productos, searchTerm, filtroTipo, filtroPrecio])
 
   const getTipoName = (tipo) => {
-    if (tipo === JetGrande) return "Jet Grande"
-    if (tipo === JetMediano) return "Jet Mediano"
-    if (tipo === JetPequeno) return "Jet Pequeño"
-    if (tipo === Avioneta) return "Avioneta"
-    if (tipo === Helicoptero) return "Helicóptero"
+    if (tipo === "jetGrande") return "Jet Grande"
+    if (tipo === "jetMediano") return "Jet Mediano"
+    if (tipo === "jetPequeno") return "Jet Pequeño"
+    if (tipo === "avioneta") return "Avioneta"
+    if (tipo === "helicoptero") return "Helicóptero"
     return "Todos"
   }
 
@@ -190,7 +190,7 @@ function EscaparateProductos({
               href="#"
               onClick={(e) => {
                 e.preventDefault()
-                handleFilterClick(JetGrande)
+                handleFilterClick("jetGrande")
               }}
             >
               Jet Grande
@@ -202,7 +202,7 @@ function EscaparateProductos({
               href="#"
               onClick={(e) => {
                 e.preventDefault()
-                handleFilterClick(JetMediano)
+                handleFilterClick("jetMediano")
               }}
             >
               Jet Mediano
@@ -214,7 +214,7 @@ function EscaparateProductos({
               href="#"
               onClick={(e) => {
                 e.preventDefault()
-                handleFilterClick(JetPequeno)
+                handleFilterClick("jetPequeno")
               }}
             >
               Jet Pequeño
@@ -226,7 +226,7 @@ function EscaparateProductos({
               href="#"
               onClick={(e) => {
                 e.preventDefault()
-                handleFilterClick(Avioneta)
+                handleFilterClick("avioneta")
               }}
             >
               Avioneta
@@ -238,7 +238,7 @@ function EscaparateProductos({
               href="#"
               onClick={(e) => {
                 e.preventDefault()
-                handleFilterClick(Helicoptero)
+                handleFilterClick("helicoptero")
               }}
             >
               Helicóptero

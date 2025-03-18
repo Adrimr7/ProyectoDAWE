@@ -10,6 +10,7 @@ function JetMediano(nombre, precio, descripcion, imagen, num_pasajeros) {
   // Return the enhanced object with jet-specific properties
   return {
     ...producto,
+    tipo: "jetMediano",
 
     // Add getters and setters for num_pasajeros
     get num_pasajeros() {

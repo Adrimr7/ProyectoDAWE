@@ -10,7 +10,8 @@ function Avioneta(nombre, precio, descripcion, imagen, alcance) {
   // Return the enhanced object with avioneta-specific properties
   return {
     ...producto,
-
+    tipo: "avioneta",
+    
     // Add getters and setters for alcance
     get alcance() {
       return _alcance
