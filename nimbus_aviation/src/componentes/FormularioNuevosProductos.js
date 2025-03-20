@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react" // Importamos useRef para manejar el input file
 import { FileUploader } from "react-drag-drop-files"
 import { JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from "../tienda/tienda"
 import { IMAGEN_POR_DEFECTO } from "../tienda/utils"
@@ -14,14 +14,33 @@ function FormularioNuevosProductos({ addProduct }) {
   const [imagen, setImagen] = useState(null)
   const [showSuccess, setShowSuccess] = useState(false)
 
+  const fileInputRef = useRef(null) // Referencia al input file
+
   const fileTypes = ["JPG", "PNG", "GIF", "JPEG"]
 
   const handleTipoChange = (e) => {
     setTipo(e.target.value)
   }
 
+  // Maneja el cambio en el drag and drop
   const handleFileChange = (file) => {
     setImagen(file)
+    // Resetear el input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "" // Borra el archivo seleccionado en el input file
+    }
+  }
+
+  // Maneja el cambio en el input file
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setImagen(file)
+      // Resetear el drag and drop
+      setImagen(file) // Actualiza el estado
+    } else {
+      setImagen(null) // Si no hay archivo, resetea el estado
+    }
   }
 
   const handleSubmit = (e) => {
@@ -75,14 +94,17 @@ function FormularioNuevosProductos({ addProduct }) {
 
     addProduct(nuevoProducto)
 
-    // Reset form
+    // Resetear el formulario
     setNombre("")
     setPrecio("")
     setDescripcion("")
     setExtra("")
     setImagen(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "" // Resetear el input file
+    }
 
-    // Show success message
+    // Mostrar mensaje de éxito
     setShowSuccess(true)
     setTimeout(() => {
       setShowSuccess(false)
@@ -156,15 +178,21 @@ function FormularioNuevosProductos({ addProduct }) {
         </div>
 
         <div className="mb-2">
-            <input type="file" id="imagenJet" class="form-control"></input>
+          <input
+            type="file"
+            id="imagenJet"
+            className="form-control"
+            onChange={handleFileInputChange}
+            ref={fileInputRef} // Asignamos la referencia al input file
+          />
         </div>
 
         <div className="mb-2">
           <FileUploader
             handleChange={handleFileChange}
             name="imagenJet"
-            // types={fileTypes}
-            label=" " // Arrastra y suelta aquí la imagen del producto o haz clic para seleccionar
+            types={fileTypes}
+            label="Arrastra y suelta aquí la imagen del producto o haz clic para seleccionar"
             hoverTitle="Suelta la imagen"
             maxSize={5}
           />
@@ -184,4 +212,3 @@ function FormularioNuevosProductos({ addProduct }) {
 }
 
 export default FormularioNuevosProductos
-
