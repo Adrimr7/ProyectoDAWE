@@ -156,6 +156,10 @@ function FormularioNuevosProductos({ addProduct }) {
         </div>
 
         <div className="mb-2">
+            <input type="file" id="imagenJet" class="form-control"></input>
+        </div>
+
+        <div className="mb-2">
           <FileUploader
             handleChange={handleFileChange}
             name="imagenJet"
