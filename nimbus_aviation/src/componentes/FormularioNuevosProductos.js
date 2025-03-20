@@ -160,8 +160,8 @@ function FormularioNuevosProductos({ addProduct }) {
             handleChange={handleFileChange}
             name="imagenJet"
             types={fileTypes}
-            label="Arrastra y suelta aquí la imagen del producto o haz clic para seleccionar"
-            hoverTitle="Suelta aquí"
+            label="" // Arrastra y suelta aquí la imagen del producto o haz clic para seleccionar
+            hoverTitle="Suelta la imagen"
             maxSize={5}
           />
           {imagen && <p className="mt-2">Archivo seleccionado: {imagen.name}</p>}

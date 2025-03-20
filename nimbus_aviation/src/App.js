@@ -16,6 +16,7 @@ function App() {
   const [filtroPrecio, setFiltroPrecio] = useState(120000000)
   const [searchTerm, setSearchTerm] = useState("")
   const [showCart, setShowCart] = useState(false)
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
 
   // 🔹 Cargar el carrito desde localStorage al inicio
   useEffect(() => {
@@ -29,6 +30,20 @@ function App() {
       guardarEnCarrito(productoId, carrito[productoId])
     })
   }, [carrito])
+
+  // 🔹 Manejar el estado de conexión
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
 
   const addToCart = (product) => {
     setCarrito((prevCarrito) => {
@@ -73,7 +88,7 @@ function App() {
 
   return (
     <div id="content">
-      <Cabecera toggleCart={toggleCart} title="Nimbus Aviation" />
+      <Cabecera toggleCart={toggleCart} title="Nimbus Aviation" isOnline={isOnline} />
 
       <Carrito carrito={carrito} updateCartItem={updateCartItem} show={showCart} onHide={() => setShowCart(false)} />
 
