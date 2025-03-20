@@ -49,10 +49,10 @@ function Carrito({ carrito, updateCartItem, show, onHide }) {
           ) : (
             Object.entries(carrito).map(([id, { nombre, precio, cantidad, img }]) => (
               <div className="d-flex align-items-center mb-3" key={id}>
-                <img src={img || "/placeholder.svg"} width="50" className="me-3" alt={nombre} />
+                <img src={img || "/placeholder.svg"} width="140" className="me-3" alt={nombre} />
                 <div>
                   <h6>{nombre}</h6>
-                  <p>${precio.toLocaleString()} c/u</p>
+                  <p>€{precio.toLocaleString()} c/u</p>
                   <input
                     type="number"
                     min="0"
