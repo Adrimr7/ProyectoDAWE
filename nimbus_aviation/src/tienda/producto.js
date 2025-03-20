@@ -1,8 +1,8 @@
-import { guidGenerator, IMAGEN_POR_DEFECTO } from "./utils"
+import { cyrb53, guidGenerator, IMAGEN_POR_DEFECTO } from "./utils"
 
 function Producto(nombre, precio, descripcion = "Sin descripción", imagen = null) {
   // Using closures to maintain private variables
-  const id = guidGenerator()
+  const id = cyrb53(nombre)
   let _nombre = nombre
   let _precio = precio
   let _descripcion = descripcion
