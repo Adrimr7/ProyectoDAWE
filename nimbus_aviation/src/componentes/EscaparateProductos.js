@@ -13,8 +13,10 @@ function EscaparateProductos({
   filtroTipo,
   setFiltroTipo,
   filtroPrecio,
+  filtroPrecioMin,
   setFiltroPrecio,
-  searchTerm,
+  setFiltroPrecioMin,
+  searchTerm, 
   setSearchTerm,
   addToCart,
 }) {
@@ -29,8 +31,8 @@ function EscaparateProductos({
     const filtered = productos.filter(
       (producto) =>
         producto.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (filtroTipo === null || producto.tipo === filtroTipo) && // Cambia esta línea
-        producto.precio <= filtroPrecio,
+        (filtroTipo === null || producto.tipo === filtroTipo) && 
+        producto.precio <= filtroPrecio && producto.precio >= filtroPrecioMin,
     )
 
     setProductosFiltrados(filtered)
@@ -44,7 +46,7 @@ function EscaparateProductos({
     } else {
       setTitle("Todos los productos")
     }
-  }, [productos, searchTerm, filtroTipo, filtroPrecio])
+  }, [productos, searchTerm, filtroTipo, filtroPrecio, filtroPrecioMin])
 
   const getTipoName = (tipo) => {
     if (tipo === "jetGrande") return "Jet Grande"
@@ -61,7 +63,18 @@ function EscaparateProductos({
   }
 
   const handlePriceChange = (e) => {
+    if (filtroPrecioMin > Number.parseInt(e.target.value)) {
+      setFiltroPrecioMin(Number.parseInt(e.target.value))
+    }
     setFiltroPrecio(Number.parseInt(e.target.value))
+    setCurrentPage(1) // Volver a la primera página al cambiar el precio
+  }
+
+  const handlePriceChangeMin = (e) => {
+    if (filtroPrecio < Number.parseInt(e.target.value)) {
+      setFiltroPrecio(Number.parseInt(e.target.value))
+    }
+    setFiltroPrecioMin(Number.parseInt(e.target.value))
     setCurrentPage(1) // Volver a la primera página al cambiar el precio
   }
 
@@ -181,6 +194,7 @@ function EscaparateProductos({
               onClick={(e) => {
                 e.preventDefault()
                 handleFilterClick(null)
+                setFiltroPrecioMin(0)
               }}
             >
               Todos
@@ -262,6 +276,19 @@ function EscaparateProductos({
           id="rangoPrecio"
           value={filtroPrecio}
           onChange={handlePriceChange}
+        />
+        <label htmlFor="rangoPrecioMin" className="form-label">
+          Filtrar por precio mínimo: <span id="rangoPrecioValueMin">{convertToInternationalCurrencySystem(filtroPrecioMin)}</span> $
+        </label>
+        <input
+          type="range"
+          className="form-range"
+          min="0"
+          max="120000000"
+          step="100000"
+          id="rangoPrecioMin"
+          value={filtroPrecioMin}
+          onChange={handlePriceChangeMin}
         />
       </div>
 

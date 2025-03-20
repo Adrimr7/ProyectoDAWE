@@ -14,6 +14,7 @@ function App() {
   const [carrito, setCarrito] = useState({})
   const [filtroTipo, setFiltroTipo] = useState(null)
   const [filtroPrecio, setFiltroPrecio] = useState(120000000)
+  const [filtroPrecioMin, setFiltroPrecioMin] = useState(0)
   const [searchTerm, setSearchTerm] = useState("")
   const [showCart, setShowCart] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
@@ -100,6 +101,8 @@ function App() {
             setFiltroTipo={setFiltroTipo}
             filtroPrecio={filtroPrecio}
             setFiltroPrecio={setFiltroPrecio}
+            filtroPrecioMin={filtroPrecioMin}
+            setFiltroPrecioMin={setFiltroPrecioMin}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             addToCart={addToCart} />
