@@ -5,6 +5,8 @@ import BuscadorProductos from "./BuscadorProductos"
 import Paginacion from "./Paginacion"
 import DetallesProducto from "./DetallesProducto"
 import { JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from "../tienda/tienda"
+import carritoIcon from "../imagenes/carrito.png";
+
 
 function EscaparateProductos({
   productos,
@@ -138,7 +140,7 @@ function EscaparateProductos({
             data-precio={product.precio}
             data-img={product.imagen}
           >
-            <img src="../imagenes/carrito.png" alt="Añadir al carrito" style={{ width: "24px", height: "24px" }} />
+            <img src={carritoIcon} alt="Añadir al carrito" style={{ width: "24px", height: "24px" }} />
           </button>
           <div className="card-body">
             <h5 className="card-title">{product.nombre}</h5>
