@@ -87,14 +87,14 @@ function App() {
   }
 
   return (
-    <div id="content">
-      <Cabecera toggleCart={toggleCart} title="Nimbus Aviation" isOnline={isOnline} />
+    <><div id="content" className="d-flex flex-column">
+      <Cabecera className="cabecera" toggleCart={toggleCart} title="Nimbus Aviation" isOnline={isOnline} />
 
-      <Carrito carrito={carrito} updateCartItem={updateCartItem} show={showCart} onHide={() => setShowCart(false)} />
+      <Carrito className="carro" carrito={carrito} updateCartItem={updateCartItem} show={showCart} onHide={() => setShowCart(false)} />
 
       <div className="container mt-4">
         <div className="row">
-          <EscaparateProductos
+          <EscaparateProductos id="escaparate"
             productos={productos}
             filtroTipo={filtroTipo}
             setFiltroTipo={setFiltroTipo}
@@ -102,15 +102,13 @@ function App() {
             setFiltroPrecio={setFiltroPrecio}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            addToCart={addToCart}
-          />
+            addToCart={addToCart} />
 
           <FormularioNuevosProductos addProduct={addProduct} />
         </div>
       </div>
+    </div><Pie id="pie" content="&copy; 2025 Nimbus Aviation. Todos los derechos reservados." /></>
 
-      <Pie content="&copy; 2025 Nimbus Aviation. Todos los derechos reservados." />
-    </div>
   )
 }
 
