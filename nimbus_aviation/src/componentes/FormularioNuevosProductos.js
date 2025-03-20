@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useRef } from "react" // Importamos useRef para manejar el input file
+import { useState, useRef } from "react"
 import { FileUploader } from "react-drag-drop-files"
 import { JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from "../tienda/tienda"
 import { IMAGEN_POR_DEFECTO } from "../tienda/utils"
 
-function FormularioNuevosProductos({ addProduct }) {
+function FormularioNuevosProductos({ addProduct, isOnline }) {
   const [tipo, setTipo] = useState("Jet Grande")
   const [nombre, setNombre] = useState("")
   const [precio, setPrecio] = useState("")
@@ -14,7 +14,7 @@ function FormularioNuevosProductos({ addProduct }) {
   const [imagen, setImagen] = useState(null)
   const [showSuccess, setShowSuccess] = useState(false)
 
-  const fileInputRef = useRef(null) // Referencia al input file
+  const fileInputRef = useRef(null)
 
   const fileTypes = ["JPG", "PNG", "GIF", "JPEG"]
 
@@ -22,24 +22,19 @@ function FormularioNuevosProductos({ addProduct }) {
     setTipo(e.target.value)
   }
 
-  // Maneja el cambio en el drag and drop
   const handleFileChange = (file) => {
     setImagen(file)
-    // Resetear el input file
     if (fileInputRef.current) {
-      fileInputRef.current.value = "" // Borra el archivo seleccionado en el input file
+      fileInputRef.current.value = ""
     }
   }
 
-  // Maneja el cambio en el input file
   const handleFileInputChange = (e) => {
     const file = e.target.files[0]
     if (file) {
       setImagen(file)
-      // Resetear el drag and drop
-      setImagen(file) // Actualiza el estado
     } else {
-      setImagen(null) // Si no hay archivo, resetea el estado
+      setImagen(null)
     }
   }
 
@@ -94,17 +89,15 @@ function FormularioNuevosProductos({ addProduct }) {
 
     addProduct(nuevoProducto)
 
-    // Resetear el formulario
     setNombre("")
     setPrecio("")
     setDescripcion("")
     setExtra("")
     setImagen(null)
     if (fileInputRef.current) {
-      fileInputRef.current.value = "" // Resetear el input file
+      fileInputRef.current.value = ""
     }
 
-    // Mostrar mensaje de éxito
     setShowSuccess(true)
     setTimeout(() => {
       setShowSuccess(false)
@@ -116,7 +109,13 @@ function FormularioNuevosProductos({ addProduct }) {
       <h2>Agregar un Producto</h2>
       <form id="formulario-jet" onSubmit={handleSubmit}>
         <div className="mb-2">
-          <select id="tipoJet" className="form-control" value={tipo} onChange={handleTipoChange}>
+          <select
+            id="tipoJet"
+            className="form-control"
+            value={tipo}
+            onChange={handleTipoChange}
+            disabled={!isOnline} // Deshabilitar si está offline
+          >
             <option value="">Selecciona un tipo</option>
             <option value="Jet Grande">Jet Grande</option>
             <option value="Jet Mediano">Jet Mediano</option>
@@ -134,6 +133,7 @@ function FormularioNuevosProductos({ addProduct }) {
             placeholder="Nombre del producto"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
+            disabled={!isOnline} // Deshabilitar si está offline
           />
         </div>
 
@@ -145,6 +145,7 @@ function FormularioNuevosProductos({ addProduct }) {
             placeholder="Precio ($)"
             value={precio}
             onChange={(e) => setPrecio(e.target.value)}
+            disabled={!isOnline} // Deshabilitar si está offline
           />
         </div>
 
@@ -155,6 +156,7 @@ function FormularioNuevosProductos({ addProduct }) {
             placeholder="Descripción"
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
+            disabled={!isOnline} // Deshabilitar si está offline
           />
         </div>
 
@@ -174,6 +176,7 @@ function FormularioNuevosProductos({ addProduct }) {
             }
             value={extra}
             onChange={(e) => setExtra(e.target.value)}
+            disabled={!isOnline} // Deshabilitar si está offline
           />
         </div>
 
@@ -183,7 +186,8 @@ function FormularioNuevosProductos({ addProduct }) {
             id="imagenJet"
             className="form-control"
             onChange={handleFileInputChange}
-            ref={fileInputRef} // Asignamos la referencia al input file
+            ref={fileInputRef}
+            disabled={!isOnline} // Deshabilitar si está offline
           />
         </div>
 
@@ -191,15 +195,15 @@ function FormularioNuevosProductos({ addProduct }) {
           <FileUploader
             handleChange={handleFileChange}
             name="imagenJet"
-            types={fileTypes}
-            label="Arrastra y suelta aquí la imagen del producto o haz clic para seleccionar"
+            label=" "
             hoverTitle="Suelta la imagen"
             maxSize={5}
+            disabled={!isOnline} // Deshabilitar si está offline
           />
           {imagen && <p className="mt-2">Archivo seleccionado: {imagen.name}</p>}
         </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary" disabled={!isOnline}>
           Agregar Producto
         </button>
       </form>

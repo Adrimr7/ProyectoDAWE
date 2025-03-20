@@ -104,11 +104,10 @@ function App() {
             setSearchTerm={setSearchTerm}
             addToCart={addToCart} />
 
-          <FormularioNuevosProductos addProduct={addProduct} />
+          <FormularioNuevosProductos addProduct={addProduct} isOnline={isOnline} />
         </div>
       </div>
     </div><Pie id="pie" content="&copy; 2025 Nimbus Aviation. Todos los derechos reservados." /></>
-
   )
 }
 
