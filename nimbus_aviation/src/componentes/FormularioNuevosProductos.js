@@ -192,14 +192,17 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
         </div>
 
         <div className="mb-2">
-          <FileUploader
-            handleChange={handleFileChange}
-            name="imagenJet"
-            label=" "
-            hoverTitle="Suelta la imagen"
-            maxSize={5}
-            disabled={!isOnline} // Deshabilitar si está offline
-          />
+          <div id="mi-file-uploader">
+            <FileUploader
+              id="mi-file-uploader"
+              handleChange={handleFileChange}
+              name="imagenJet"
+              label=" "
+              hoverTitle="Suelta la imagen"
+              maxSize={5}
+              disabled={!isOnline} // Deshabilitar si está offline
+            />
+          </div>
           {imagen && <p className="mt-2">Archivo seleccionado: {imagen.name}</p>}
         </div>
 
