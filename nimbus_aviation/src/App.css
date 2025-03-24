@@ -73,3 +73,12 @@ body {
   background-image: url('imagenes/patron200.png');
   background-repeat: repeat;
 }
+
+.sc-VHjGu.jriMII  {
+  border: 2px dashed rgb(4, 8, 235) !important;
+}
+
+.sc-VHjGu.jriMII svg path {  /* Ajusta las clases según lo que veas en DevTools */
+  fill: #ffffff !important;  /* Rojo de Bootstrap */
+  stroke: rgb(4, 8, 235) !important; /* Si usa bordes */
+}
