@@ -1,5 +1,6 @@
 "use client"
-import { JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from "../tienda/tienda"
+import { JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero, DIVISA } from "../tienda/tienda"
+
 
 function DetallesProducto({ product, show, onHide }) {
   if (!product || !show) return null
@@ -58,7 +59,7 @@ function DetallesProducto({ product, show, onHide }) {
                   {product.descripcion}
                 </p>
                 <p id="modalPrice" className="mt-3">
-                  <strong>Precio:</strong> ${product.precio.toLocaleString()}
+                  <strong>Precio:</strong> {DIVISA}{product.precio.toLocaleString()}
                 </p>
                 <div id="modalAttributes">{extraInfo}</div>
               </div>

@@ -1,5 +1,7 @@
 "use client"
 
+import { DIVISA, MAX_COPIAS } from "../tienda/tienda"
+
 function Carrito({ carrito, updateCartItem, show, onHide }) {
   const calculateTotal = () => {
     let total = 0
@@ -12,7 +14,7 @@ function Carrito({ carrito, updateCartItem, show, onHide }) {
   const handleQuantityChange = (id, cantidad) => {
     const newCantidad = Number.parseInt(cantidad)
 
-    if (newCantidad >= 20) {
+    if (newCantidad >= 21) {
       const input = document.querySelector(`.cantidad-input[data-id="${id}"]`)
       const mensaje = input?.parentElement.querySelector(".mensaje-max")
 
@@ -20,7 +22,7 @@ function Carrito({ carrito, updateCartItem, show, onHide }) {
         mensaje.classList.remove("d-none")
 
         setTimeout(() => {
-          updateCartItem(id, 19) // Set to max - 1
+          updateCartItem(id, MAX_COPIAS) // Set to max value
           mensaje.classList.add("d-none")
         }, 2000)
       }
@@ -52,7 +54,7 @@ function Carrito({ carrito, updateCartItem, show, onHide }) {
                 <img src={img || "/placeholder.svg"} width="140" className="me-3" alt={nombre} />
                 <div>
                   <h6>{nombre}</h6>
-                  <p>€{precio.toLocaleString()} c/u</p>
+                  <p>{DIVISA}{precio.toLocaleString()} c/u</p>
                   <input
                     type="number"
                     min="0"
@@ -63,7 +65,7 @@ function Carrito({ carrito, updateCartItem, show, onHide }) {
                     onChange={(e) => handleQuantityChange(id, e.target.value)}
                   />
                   <p>
-                    Total: $<span className="item-total">{(precio * cantidad).toLocaleString()}</span>
+                    Total: {DIVISA}<span className="item-total">{(precio * cantidad).toLocaleString()}</span>
                   </p>
                   <small className="text-danger mensaje-max d-none">Máximo alcanzado</small>
                 </div>
@@ -72,7 +74,7 @@ function Carrito({ carrito, updateCartItem, show, onHide }) {
           )}
         </div>
         <h5 className="mt-3">
-          Total: <span id="total">{calculateTotal().toLocaleString()}</span> $
+          Total: <span id="total">{calculateTotal().toLocaleString()}</span> {DIVISA}
         </h5>
       </div>
     </div>

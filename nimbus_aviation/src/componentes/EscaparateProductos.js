@@ -6,6 +6,7 @@ import Paginacion from "./Paginacion"
 import DetallesProducto from "./DetallesProducto"
 import { JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from "../tienda/tienda"
 import carritoIcon from "../imagenes/carrito.png";
+import { DIVISA } from "../tienda/tienda"
 
 
 function EscaparateProductos({
@@ -159,7 +160,7 @@ function EscaparateProductos({
             <h5 className="card-title">{product.nombre}</h5>
             <p className="card-text text-truncate">{product.descripcion}</p>
             <p className="card-text">
-              <strong>Precio:</strong> ${product.precio.toLocaleString()}
+              <strong>Precio:</strong> {DIVISA}{product.precio.toLocaleString()}
             </p>
             {extraInfo}
           </div>
@@ -265,7 +266,7 @@ function EscaparateProductos({
 
       <div className="mt-2">
         <label htmlFor="rangoPrecio" className="form-label">
-          Filtrar por precio máximo: <span id="rangoPrecioValue">{convertToInternationalCurrencySystem(filtroPrecio)}</span> $
+          Filtrar por precio máximo: <span id="rangoPrecioValue">{convertToInternationalCurrencySystem(filtroPrecio)}</span> {DIVISA}
         </label>
         <input
           type="range"
@@ -278,7 +279,7 @@ function EscaparateProductos({
           onChange={handlePriceChange}
         />
         <label htmlFor="rangoPrecioMin" className="form-label">
-          Filtrar por precio mínimo: <span id="rangoPrecioValueMin">{convertToInternationalCurrencySystem(filtroPrecioMin)}</span> $
+          Filtrar por precio mínimo: <span id="rangoPrecioValueMin">{convertToInternationalCurrencySystem(filtroPrecioMin)}</span> {DIVISA}
         </label>
         <input
           type="range"

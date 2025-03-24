@@ -4,7 +4,7 @@ import JetPequeno from "./jetPequeno"
 import Helicoptero from "./helicoptero"
 import Avioneta from "./avioneta"
 
-const DIVISA = "€"; // Símbolo de la divisa
+const DIVISA = "$"; // Símbolo de la divisa
 const MAX_COPIAS = 20; // Máximo de copias en el carrito
 
 
