@@ -114,7 +114,7 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
             className="form-control"
             value={tipo}
             onChange={handleTipoChange}
-            disabled={!isOnline} // Deshabilitar si está offline
+            disabled={!isOnline}
           >
             <option value="">Selecciona un tipo</option>
             <option value="Jet Grande">Jet Grande</option>
@@ -133,7 +133,7 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
             placeholder="Nombre del producto"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
-            disabled={!isOnline} // Deshabilitar si está offline
+            disabled={!isOnline}
           />
         </div>
 
@@ -145,7 +145,7 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
             placeholder="Precio ($)"
             value={precio}
             onChange={(e) => setPrecio(e.target.value)}
-            disabled={!isOnline} // Deshabilitar si está offline
+            disabled={!isOnline}
           />
         </div>
 
@@ -156,7 +156,7 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
             placeholder="Descripción"
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            disabled={!isOnline} // Deshabilitar si está offline
+            disabled={!isOnline}
           />
         </div>
 
@@ -176,7 +176,7 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
             }
             value={extra}
             onChange={(e) => setExtra(e.target.value)}
-            disabled={!isOnline} // Deshabilitar si está offline
+            disabled={!isOnline}
           />
         </div>
 
@@ -187,7 +187,7 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
             className="form-control"
             onChange={handleFileInputChange}
             ref={fileInputRef}
-            disabled={!isOnline} // Deshabilitar si está offline
+            disabled={!isOnline}
           />
         </div>
 
@@ -200,7 +200,7 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
               label=" "
               hoverTitle="Suelta la imagen"
               maxSize={5}
-              disabled={!isOnline} // Deshabilitar si está offline
+              disabled={!isOnline}
             />
           </div>
           {imagen && <p className="mt-2">Archivo seleccionado: {imagen.name}</p>}

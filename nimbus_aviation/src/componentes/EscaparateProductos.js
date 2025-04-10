@@ -68,7 +68,7 @@ function EscaparateProductos({
       setFiltroPrecioMin(Number.parseInt(e.target.value))
     }
     setFiltroPrecio(Number.parseInt(e.target.value))
-    setCurrentPage(1) // Volver a la primera página al cambiar el precio
+    setCurrentPage(1)
   }
 
   const handlePriceChangeMin = (e) => {
@@ -76,7 +76,7 @@ function EscaparateProductos({
       setFiltroPrecio(Number.parseInt(e.target.value))
     }
     setFiltroPrecioMin(Number.parseInt(e.target.value))
-    setCurrentPage(1) // Volver a la primera página al cambiar el precio
+    setCurrentPage(1)
   }
 
   const convertToInternationalCurrencySystem = (labelValue) => {
@@ -96,7 +96,7 @@ function EscaparateProductos({
     setShowModal(false)
   }
 
-  // Calculate pagination
+  // Calcular paginacion
   const totalPages = Math.ceil(productosFiltrados.length / productosPorPagina)
   const startIndex = (currentPage - 1) * productosPorPagina
   const endIndex = startIndex + productosPorPagina
