@@ -8,6 +8,9 @@ import Pie from "./componentes/Pie"
 import Carrito from "./componentes/Carrito"
 import { productos as initialProductos, guardarEnCarrito, borrarDelCarrito, cargarCarrito } from "./tienda/tienda"
 import "./App.css"
+import MiCuenta from "./componentes/MiCuenta"
+import AnadirProducto from "./componentes/AnadirProducto"
+import EditarYBorrarProductos from "./componentes/EditarYBorrarProductos"
 
 function App() {
   const [productos, setProductos] = useState(initialProductos)
@@ -18,6 +21,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("")
   const [showCart, setShowCart] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [seccionActiva, setSeccionActiva] = useState("inicio")
 
   // 🔹 Cargar el carrito desde localStorage al inicio
   useEffect(() => {
@@ -87,30 +91,49 @@ function App() {
     setShowCart(!showCart)
   }
 
+  const cambiarSeccion = (seccion) => {
+    setSeccionActiva(seccion);
+  }
+  
   return (
     <><div id="content" className="d-flex flex-column">
-      <Cabecera className="cabecera" toggleCart={toggleCart} title="Nimbus Aviation" isOnline={isOnline} />
+      <Cabecera 
+          className="cabecera" 
+          toggleCart={toggleCart} 
+          title="Nimbus Aviation" 
+          isOnline={isOnline}
+          seccionActiva={seccionActiva}
+          cambiarSeccion={cambiarSeccion} 
+        />
 
       <Carrito className="carro" carrito={carrito} updateCartItem={updateCartItem} show={showCart} onHide={() => setShowCart(false)} />
 
-      <div className="container mt-4">
-        <div className="row">
-          <EscaparateProductos id="escaparate"
-            productos={productos}
-            filtroTipo={filtroTipo}
-            setFiltroTipo={setFiltroTipo}
-            filtroPrecio={filtroPrecio}
-            setFiltroPrecio={setFiltroPrecio}
-            filtroPrecioMin={filtroPrecioMin}
-            setFiltroPrecioMin={setFiltroPrecioMin}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            addToCart={addToCart} />
+      {seccionActiva === "inicio" && (
+          <div className="container mt-4">
+            <div className="row">
+              <EscaparateProductos id="escaparate"
+                productos={productos}
+                filtroTipo={filtroTipo}
+                setFiltroTipo={setFiltroTipo}
+                filtroPrecio={filtroPrecio}
+                setFiltroPrecio={setFiltroPrecio}
+                filtroPrecioMin={filtroPrecioMin}
+                setFiltroPrecioMin={setFiltroPrecioMin}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                addToCart={addToCart} />
+            </div>
+          </div>
+        )}
 
-          <FormularioNuevosProductos addProduct={addProduct} isOnline={isOnline} />
-        </div>
+        {seccionActiva === "mi-cuenta" && <MiCuenta />}
+        
+        {seccionActiva === "anadir-producto" && <AnadirProducto addProduct={addProduct} isOnline={isOnline} />}
+        
+        {seccionActiva === "editar-productos" && <EditarYBorrarProductos productos={initialProductos} addProduct={addProduct} isOnline={isOnline} /> }
       </div>
-    </div><Pie id="pie" content="&copy; 2025 Nimbus Aviation. Todos los derechos reservados." /></>
+      <Pie id="pie" content="&copy; 2025 Nimbus Aviation. Todos los derechos reservados." />
+    </>
   )
 }
 

@@ -2,13 +2,17 @@
 
 import MenuNavegacion from "./MenuNavegacion"
 
-function Cabecera({ toggleCart, title = "Nimbus Aviation", isOnline }) {
+function Cabecera({ toggleCart, title = "Nimbus Aviation", isOnline, seccionActiva, cambiarSeccion }) {
   return (
     <header className="bg-dark text-white p-3 position-relative">
       {/* Título y navegación */}
       <div>
         <h1>{title}</h1>
-        <MenuNavegacion toggleCart={toggleCart} />
+        <MenuNavegacion 
+          toggleCart={toggleCart} 
+          seccionActiva={seccionActiva} 
+          cambiarSeccion={cambiarSeccion}
+        />
       </div>
 
       {/* Mensaje "Estás offline" */}
