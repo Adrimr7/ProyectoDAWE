@@ -11,6 +11,7 @@ import "./App.css"
 import MiCuenta from "./componentes/MiCuenta"
 import AnadirProducto from "./componentes/AnadirProducto"
 import EditarYBorrarProductos from "./componentes/EditarYBorrarProductos"
+import Login from "./componentes/Login"
 
 function App() {
   const [productos, setProductos] = useState(initialProductos)
@@ -111,17 +112,24 @@ function App() {
       {seccionActiva === "inicio" && (
           <div className="container mt-4">
             <div className="row">
-              <EscaparateProductos id="escaparate"
-                productos={productos}
-                filtroTipo={filtroTipo}
-                setFiltroTipo={setFiltroTipo}
-                filtroPrecio={filtroPrecio}
-                setFiltroPrecio={setFiltroPrecio}
-                filtroPrecioMin={filtroPrecioMin}
-                setFiltroPrecioMin={setFiltroPrecioMin}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                addToCart={addToCart} />
+              {/* Escaparate de productos (lado izquierdo) */}
+                <EscaparateProductos id="escaparate"
+                  productos={productos}
+                  filtroTipo={filtroTipo}
+                  setFiltroTipo={setFiltroTipo}
+                  filtroPrecio={filtroPrecio}
+                  setFiltroPrecio={setFiltroPrecio}
+                  filtroPrecioMin={filtroPrecioMin}
+                  setFiltroPrecioMin={setFiltroPrecioMin}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  addToCart={addToCart} />
+              
+              
+              {/* Formulario de login (lado derecho) */}
+              <div className="col-md-4">
+                <Login />
+              </div>
             </div>
           </div>
         )}
