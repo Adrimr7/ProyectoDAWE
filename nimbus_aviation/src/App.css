@@ -51,8 +51,16 @@
   padding-bottom: 10px;
 }
 
+.item-list-row {
+  margin: 0 auto;
+  border-top: #333;
+  border-left: #333;
+  border-bottom: #333;
+  border-right: #333; 
+}
+
 footer {
-  background-color: #333;
+  background-color: #333;   
   color: white;
   text-align: center;
   padding: 10px;

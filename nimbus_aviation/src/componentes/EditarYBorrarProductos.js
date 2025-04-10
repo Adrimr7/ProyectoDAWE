@@ -9,9 +9,10 @@ import DetallesProducto from "./DetallesProducto"
 import carritoIcon from "../imagenes/carrito.png";
 import { DIVISA } from "../tienda/tienda"
 
-function EditarYBorrarProductos({editarProducto, borrarProducto, productos, isOnline}){
-    //const [title, setTitle] = useState("Todos los productos")
+function EditarYBorrarProductos({borrarProducto, productos, isOnline}){
     const [productoElegido, setProductoElegido] = useState(null);
+    const [productosModificados, setProductosModificados] = useState(productos)
+    const [seleccionados, setSeleccionados] = useState([]);
 
     const convertToInternationalCurrencySystem = (labelValue) => {
         return Math.abs(Number(labelValue)) >= 1.0e6
@@ -21,48 +22,82 @@ function EditarYBorrarProductos({editarProducto, borrarProducto, productos, isOn
             : Math.abs(Number(labelValue))
     }
 
+    const editarProducto = (productoEditado) => {
+      };
+
     const handleEdit = (product) => {
       setProductoElegido(product);
       editarProducto(product);
+      // modificar la lista de productos con el/los editados o borrados
+      setProductosModificados(productosModificados);
     };
 
     const handleDelete = (productId) => {
       borrarProducto(productId);
     };
 
+    const setProductos = (prods) => {
+        // todo
+    }
+
     const renderProductCard = (product) => {
-        let extraInfo = ""
-    
         return (
-            <div className="d-flex align-items-center border-bottom py-2" key={product.id}>
+            <div className="d-flex item-list-row align-items-center py-1 px-2 border-bottom" key={product.id}
+                style={{ fontSize: "0.95rem", minHeight: "65px"}}
+                >
               <input
                 type="checkbox"
-                className="form-check-input me-3"
-                style={{ width: "18px", height: "18px" }}
+                className="form-check-input me-4"
+                checked={seleccionados.includes(product.id)}
+                onChange={(e) => {
+                  const { checked } = e.target;
+                  setSeleccionados((prev) =>
+                    checked ? [...prev, product.id] : prev.filter((id) => id !== product.id)
+                  );
+                }}
               />
-          
               <img
                 src={product.imagen || "/placeholder.svg"}
                 alt={product.nombre}
                 className="me-3"
-                style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "4px" }}
+                style={{ width: "64px", height: "40px", objectFit: "fill", borderRadius: "6px" }}
               />
-          
               <div className="flex-grow-1">
-                <span>{product.nombre}</span>
+                {product.nombre}
               </div>
-          
-              <a href={`/editar/${product.id}`} className="text-primary text-decoration-none ms-3">
-                Editar
-              </a>
+              <button onClick={() => handleEdit(product)}
+                className="btn btn-link text-primary p-0 m-0 ms-2"
+                style={{ fontSize: "0.9rem", textDecoration: "underline", cursor: "pointer" }}
+              >
+              Editar
+              </button>
             </div>
           );
     }
+    
     return (
-        <div id="jets-container" className="row">
-            {productos.map((product) => renderProductCard(product))}
-        </div>
-    );
+        <>
+          {seleccionados.length > 0 && (
+            <div className="mb-3">
+              <button
+                className="btn btn-danger"
+                onClick={() => {
+                  setProductos((prev) =>
+                    prev.filter((producto) => !seleccionados.includes(producto.id))
+                  );
+                  setSeleccionados([]);
+                }}
+              >
+                Borrar seleccionados ({seleccionados.length})
+              </button>
+            </div>
+          )}
+      
+          <div id="jets-container" className="row">
+            {productosModificados.map((product) => renderProductCard(product))}
+          </div>
+        </>
+      );
 }
 
 export default EditarYBorrarProductos
