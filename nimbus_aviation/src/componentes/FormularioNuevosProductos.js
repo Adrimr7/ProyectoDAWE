@@ -105,13 +105,12 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
   }
 
   return (
-    <aside className="col-md-4 mt-4">
-      <h2>Agregar un Producto</h2>
-      <form id="formulario-jet" onSubmit={handleSubmit}>
-        <div className="mb-2">
+    <div className="w-100">
+      <form id="formulario-jet" onSubmit={handleSubmit} className="mx-auto" style={{ maxWidth: '95%' }}>
+        <div className="mb-3">
           <select
             id="tipoJet"
-            className="form-control"
+            className="form-control form-control-lg"
             value={tipo}
             onChange={handleTipoChange}
             disabled={!isOnline}
@@ -125,11 +124,11 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
           </select>
         </div>
 
-        <div className="mb-2">
+        <div className="mb-3">
           <input
             type="text"
             id="nombre"
-            className="form-control"
+            className="form-control form-control-lg"
             placeholder="Nombre del producto"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
@@ -137,11 +136,11 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
           />
         </div>
 
-        <div className="mb-2">
+        <div className="mb-3">
           <input
             type="number"
             id="precio"
-            className="form-control"
+            className="form-control form-control-lg"
             placeholder="Precio ($)"
             value={precio}
             onChange={(e) => setPrecio(e.target.value)}
@@ -149,22 +148,23 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
           />
         </div>
 
-        <div className="mb-2">
+        <div className="mb-3">
           <textarea
             id="descripcion"
-            className="form-control"
+            className="form-control form-control-lg"
             placeholder="Descripción"
+            rows="4"
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
             disabled={!isOnline}
           />
         </div>
 
-        <div className="mb-2">
+        <div className="mb-3">
           <input
             type="text"
             id="extra"
-            className="form-control"
+            className="form-control form-control-lg"
             placeholder={
               tipo === "Jet Grande" || tipo === "Jet Mediano" || tipo === "Jet Pequeño"
                 ? "Número de pasajeros"
@@ -180,18 +180,18 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
           />
         </div>
 
-        <div className="mb-2">
+        <div className="mb-3">
           <input
             type="file"
             id="imagenJet"
-            className="form-control"
+            className="form-control form-control-lg"
             onChange={handleFileInputChange}
             ref={fileInputRef}
             disabled={!isOnline}
           />
         </div>
 
-        <div className="mb-2">
+        <div className="mb-3">
           <div id="mi-file-uploader">
             <FileUploader
               id="mi-file-uploader"
@@ -206,15 +206,17 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
           {imagen && <p className="mt-2">Archivo seleccionado: {imagen.name}</p>}
         </div>
 
-        <button type="submit" className="btn btn-primary" disabled={!isOnline}>
-          Agregar Producto
-        </button>
+        <div className="text-center mb-3">
+          <button type="submit" className="btn btn-primary btn-lg px-5" disabled={!isOnline}>
+            Agregar Producto
+          </button>
+        </div>
       </form>
 
       <div id="mensaje-exito" className={`alert alert-success mt-3 ${showSuccess ? "" : "d-none"}`} role="alert">
         Producto añadido con éxito!
       </div>
-    </aside>
+    </div>
   )
 }
 

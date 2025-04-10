@@ -25,7 +25,7 @@ function MiCuenta() {
   }
 
   return (
-    <div id="mi-cuenta" className="container mt-4">
+    <div id="mi-cuenta" className="col-md-8">
       <h2 className="mb-4">Mi cuenta</h2>
       
       {!editando ? (
@@ -68,6 +68,7 @@ function MiCuenta() {
                   name="email"
                   value={datos.email}
                   onChange={handleChange}
+                  disabled 
                 />
               </div>
               <div className="mb-3">

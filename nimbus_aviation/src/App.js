@@ -109,36 +109,35 @@ function App() {
 
       <Carrito className="carro" carrito={carrito} updateCartItem={updateCartItem} show={showCart} onHide={() => setShowCart(false)} />
 
-      {seccionActiva === "inicio" && (
-          <div className="container mt-4">
-            <div className="row">
-              {/* Escaparate de productos (lado izquierdo) */}
-                <EscaparateProductos id="escaparate"
-                  productos={productos}
-                  filtroTipo={filtroTipo}
-                  setFiltroTipo={setFiltroTipo}
-                  filtroPrecio={filtroPrecio}
-                  setFiltroPrecio={setFiltroPrecio}
-                  filtroPrecioMin={filtroPrecioMin}
-                  setFiltroPrecioMin={setFiltroPrecioMin}
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
-                  addToCart={addToCart} />
-              
-              
-              {/* Formulario de login (lado derecho) */}
-              <div className="col-md-4">
-                <Login />
-              </div>
-            </div>
-          </div>
-        )}
+      <div className="container mt-4">
+        <div className="row">
+          {/* Contenido principal (cambia según la sección) - Lado izquierdo */}
+            {seccionActiva === "inicio" && (
+              <EscaparateProductos id="escaparate"
+                productos={productos}
+                filtroTipo={filtroTipo}
+                setFiltroTipo={setFiltroTipo}
+                filtroPrecio={filtroPrecio}
+                setFiltroPrecio={setFiltroPrecio}
+                filtroPrecioMin={filtroPrecioMin}
+                setFiltroPrecioMin={setFiltroPrecioMin}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                addToCart={addToCart} />
+            )}
 
-        {seccionActiva === "mi-cuenta" && <MiCuenta />}
-        
-        {seccionActiva === "anadir-producto" && <AnadirProducto addProduct={addProduct} isOnline={isOnline} />}
-        
-        {seccionActiva === "editar-productos" && <EditarYBorrarProductos productos={initialProductos} addProduct={addProduct} isOnline={isOnline} /> }
+            {seccionActiva === "mi-cuenta" && <MiCuenta />}
+            
+            {seccionActiva === "anadir-producto" && <AnadirProducto addProduct={addProduct} isOnline={isOnline} />}
+            
+            {seccionActiva === "editar-productos" && <EditarYBorrarProductos productos={initialProductos} addProduct={addProduct} isOnline={isOnline} />}
+          
+          {/* Formulario de login (siempre visible) - Lado derecho */}
+          <div className="col-md-4">
+            <Login />
+          </div>
+        </div>
+      </div>
       </div>
       <Pie id="pie" content="&copy; 2025 Nimbus Aviation. Todos los derechos reservados." />
     </>
