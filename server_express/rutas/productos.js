@@ -3,23 +3,23 @@ import { ObjectId } from 'mongodb';
 
 const router = Router();
 
-const comprobarLogeo = (req, res, next) => {
-  if (!req.session.email) {
-    return res.status(401).json({ error: 'Debes estar logeado para acceder' });
+const comprobarLogeo = (solicitud, respuesta, next) => {
+  if (!solicitud.session.email) {
+    return respuesta.status(401).json({ error: 'Debes estar logeado para acceder' });
   }
   next();
 };
 
-const comprobarAdmin = async (req, res, next) => {
-  if (!req.session.email) {
-    return res.status(401).json({ error: 'Debes estar logeado para acceder' });
+const comprobarAdmin = async (solicitud, respuesta, next) => {
+  if (!solicitud.session.email) {
+    return respuesta.status(401).json({ error: 'Debes estar logeado para acceder' });
   }
   
-  const db = req.app.locals.db;
-  const usuario = await db.collection('Usuarios').findOne({ Email: req.session.email });
+  const db = solicitud.app.locals.db;
+  const usuario = await db.collection('Usuarios').findOne({ Email: solicitud.session.email });
   
   if (!usuario || usuario.Rol !== 'administrador') {
-    return res.status(403).json({ error: 'No tienes permisos para acceder a este recurso' });
+    return respuesta.status(403).json({ error: 'No tienes permisos para acceder a este recurso' });
   }
   
   next();
@@ -50,13 +50,13 @@ const productoSchema = new Schema({
 const Producto = model("Producto", productoSchema);
 
 // GET /productos
-app.get("/productos", async (req, res) => {
+app.get("/productos", async (solicitud, respuesta) => {
   const products = await Producto.find();
-  res.json(products);
+  respuesta.json(products);
 });
 
 // POST /productos
-app.post("/productos", async (req, res) => {
+app.post("/productos", async (solicitud, respuesta) => {
   const camposPermitidos = {
       JetGrande: "num_pasajeros",
       JetMediano: "num_pasajeros",
@@ -66,44 +66,42 @@ app.post("/productos", async (req, res) => {
     };
   const claveExtra = Object.keys(extra || {});
   if (claveExtra.length !== 1 || claveExtra[0] !== camposPermitidos[tipo]) {
-    return res.status(400).json({
+    return respuesta.status(400).json({
       error: `El campo extra para el tipo "${tipo}" debe ser "${camposPermitidos[tipo]}"`,
     });
   }
 
-  const productoNuevo = new Producto(req.body);
+  const productoNuevo = new Producto(solicitud.body);
   await productoNuevo.save();
-  res.json(productoNuevo);
+  respuesta.json(productoNuevo);
 });
 
-
-
 // DELETE /productos/:id
-app.delete("/productos/:id", async (req, res) => {
-  const { id } = req.params;
+app.delete("/productos/:id", async (solicitud, respuesta) => {
+  const { id } = solicitud.params;
   await Producto.findByIdAndDelete(id);
-  res.json({ message: "Producto deleted" });
+  respuesta.json({ message: "Producto deleted" });
 });
 
 // PUT /productos/:id
-app.put("/productos/:id", async (req, res) => {
-  const { id } = req.params;
-  const updatedProduct = await Producto.findByIdAndUpdate(id, req.body, { new: true });
-  res.json(updatedProduct);
+app.put("/productos/:id", async (solicitud, respuesta) => {
+  const { id } = solicitud.params;
+  const updatedProduct = await Producto.findByIdAndUpdate(id, solicitud.body, { new: true });
+  respuesta.json(updatedProduct);
 });
 
 // Start Server
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 */
 // GET /productos
-router.get('/productos', async (req, res) => {
+router.get('/productos', async (solicitud, respuesta) => {
     try {
-      const db = req.app.locals.db;
+      const db = solicitud.app.locals.db;
       const productos = await db.collection('Productos').find({}).toArray();
       
-      const productosMapeados = productos.map(producto => {
+      const mapaProductos = productos.map(producto => {
         
-        const productoMapeado = {
+        const avionMapeado = {
           id: producto._id,
           tipo: producto.Tipo,
           nombre: producto.Nombre,
@@ -113,40 +111,40 @@ router.get('/productos', async (req, res) => {
         };
         
         if (producto.Tipo == 'JetGrande' || producto.Tipo == 'JetMediano' || producto.Tipo == 'JetPequeno') {
-            productoMapeado.numPasajeros = producto.NumPasajeros;
+          avionMapeado.numPasajeros = producto.NumPasajeros;
           }
           else if (producto.Tipo == 'Avioneta') {
-            productoMapeado.alcance = producto.Alcance;
+            avionMapeado.alcance = producto.Alcance;
           }
           else if (producto.Tipo == 'Helicoptero') {
-            productoMapeado.facilidades = producto.Facilidades;
+            avionMapeado.facilidades = producto.Facilidades;
           }
           else {
-            return res.status(400).json({ error: 'Tipo de producto no válido' });
+            return respuesta.status(400).json({ error: 'Tipo de producto no válido' });
           }
         
-        return productoMapeado;
+        return avionMapeado;
       });
       
-      res.json(productosMapeados);
+      respuesta.json(mapaProductos);
     } 
     catch (error) {
       console.error('Error al obtener productos:', error);
-      res.status(500).json({ error: 'Error al obtener lista de productos' });
+      respuesta.status(500).json({ error: 'Error al obtener lista de productos' });
     }
   });
   
   // GET /productos/:id
-  router.get('/productos:id', async (req, res) => {
+  router.get('/productos:id', async (solicitud, respuesta) => {
     try {
-      const db = req.app.locals.db;
-      const producto = await db.collection('Productos').findOne({ _id: new ObjectId(req.params.id) });
+      const db = solicitud.app.locals.db;
+      const producto = await db.collection('Productos').findOne({ _id: new ObjectId(solicitud.params.id) });
       
       if (!producto) {
-        return res.status(404).json({ error: 'Producto no encontrado' });
+        return respuesta.status(404).json({ error: 'Producto no encontrado' });
       }
       
-      const productoMapeado = {
+      const avionMapeado = {
         id: producto._id,
         tipo: producto.Tipo,
         nombre: producto.Nombre,
@@ -156,42 +154,42 @@ router.get('/productos', async (req, res) => {
       };
       
       if (producto.Tipo == 'JetGrande' || producto.Tipo == 'JetMediano' || producto.Tipo == 'JetPequeno') {
-        productoMapeado.numPasajeros = producto.NumPasajeros;
+        avionMapeado.numPasajeros = producto.NumPasajeros;
       }
       else if (producto.Tipo == 'Avioneta') {
-        productoMapeado.alcance = producto.Alcance;
+        avionMapeado.alcance = producto.Alcance;
       }
       else if (producto.Tipo == 'Helicoptero') {
-        productoMapeado.facilidades = producto.Facilidades;
+        avionMapeado.facilidades = producto.Facilidades;
       }
       else {
-        return res.status(400).json({ error: 'Tipo de producto no válido' });
+        return respuesta.status(400).json({ error: 'Tipo de producto no válido' });
       }
       
-      res.json(productoMapeado);
+      respuesta.json(avionMapeado);
     } 
     catch (error) {
       console.error('Error al obtener producto:', error);
-      res.status(500).json({ error: 'Error al obtener información del producto' });
+      respuesta.status(500).json({ error: 'Error al obtener información del producto' });
     }
   });
   
   // POST /productos (admin)
-  router.post('/productos', comprobarAdmin, async (req, res) => {
-    const { tipo, nombre, precio, descripcion, imagen, numPasajeros, alcance, facilidades } = req.body;
+  router.post('/productos', comprobarAdmin, async (solicitud, respuesta) => {
+    const { tipo, nombre, precio, descripcion, imagen, numPasajeros, alcance, facilidades } = solicitud.body;
     
     if (!tipo || !nombre || !precio) {
-      return res.status(400).json({ error: 'Tipo, nombre y precio son campos obligatorios' });
+      return respuesta.status(400).json({ error: 'Tipo, nombre y precio son campos obligatorios' });
     }
     
     try {
-      const db = req.app.locals.db;
+      const db = solicitud.app.locals.db;
       const precioDouble = parseFloat(precio);
       if (isNaN(precioDouble)) {
-        return res.status(400).json({ error: 'El precio debe ser un valor numérico válido' });
+        return respuesta.status(400).json({ error: 'El precio debe ser un valor numérico válido' });
       }
       
-      const nuevoProducto = {
+      const nuevoAvion = {
         Tipo: String(tipo),
         Nombre: String(nombre),
         Precio: precioDouble + 0.0,
@@ -200,25 +198,25 @@ router.get('/productos', async (req, res) => {
       };
       
       if (producto.Tipo == 'JetGrande' || producto.Tipo == 'JetMediano' || producto.Tipo == 'JetPequeno') {
-        productoMapeado.NumPasajeros = String(numPasajeros);
+        avionMapeado.NumPasajeros = String(numPasajeros);
       }
       else if (producto.Tipo == 'Avioneta') {
-        productoMapeado.Alcance = String(alcance);
+        avionMapeado.Alcance = String(alcance);
       }
       else if (producto.Tipo == 'Helicoptero') {
-        productoMapeado.Facilidades = String(facilidades);
+        avionMapeado.Facilidades = String(facilidades);
       }
       else {
-        return res.status(400).json({ error: 'Tipo de producto no válido' });
+        return respuesta.status(400).json({ error: 'Tipo de producto no válido' });
       }
       
-      console.log('Intentando insertar producto:', nuevoProducto);
+      console.log('Intentando insertar producto:', nuevoAvion);
       
-      const resultado = await db.collection('Productos').insertOne(nuevoProducto);
+      const res = await db.collection('Productos').insertOne(nuevoAvion);
       
-      res.status(201).json({ 
+      respuesta.status(201).json({ 
         mensaje: 'Producto creado correctamente',
-        id: resultado.insertedId
+        id: res.insertedId
       });
     } 
     catch (error) {
@@ -228,110 +226,111 @@ router.get('/productos', async (req, res) => {
         mensajeError += ': ' + JSON.stringify(error.errInfo.details);
       }
       
-      res.status(500).json({ error: mensajeError });
+      respuesta.status(500).json({ error: mensajeError });
     }
   });
   
   // PUT /productos/:id (admin)
-  router.put('/productos:id', comprobarAdmin, async (req, res) => {
-    const { tipo, nombre, precio, descripcion, imagen, numPasajeros, alcance, facilidades } = req.body;
+  router.put('/productos:id', comprobarAdmin, async (solicitud, respuesta) => {
+    const { tipo, nombre, precio, descripcion, imagen, numPasajeros, alcance, facilidades } = solicitud.body;
     
     if (!tipo || !nombre || !precio) {
-      return res.status(400).json({ error: 'Tipo, nombre y precio son campos obligatorios' });
+      return respuesta.status(400).json({ error: 'Tipo, nombre y precio son campos obligatorios' });
     }
     
     try {
-      const db = req.app.locals.db;
+      const db = solicitud.app.locals.db;
       
-      const productoExistente = await db.collection('Productos').findOne({ _id: new ObjectId(req.params.id) });
-      if (!productoExistente) {
-        return res.status(404).json({ error: 'Producto no encontrado' });
+      const avionActual = await db.collection('Productos').findOne({ _id: new ObjectId(solicitud.params.id) });
+      if (!avionActual) {
+        return respuesta.status(404).json({ error: 'Producto no encontrado' });
       }
       
-      const productoActualizado = {
+      const avionActualizado = {
         Nombre: nombre,
         Precio: parseFloat(precio),
         Descripcion: descripcion || '',
       };
       
       if (imagen) {
-        productoActualizado.RutaImagen = imagen;
+        avionActualizado.RutaImagen = imagen;
       }
       
       if (producto.Tipo == 'JetGrande' || producto.Tipo == 'JetMediano' || producto.Tipo == 'JetPequeno') {
-        if (numPasajeros) productoMapeado.NumPasajeros = numPasajeros;
+        if (numPasajeros) avionMapeado.NumPasajeros = numPasajeros;
       }
       else if (producto.Tipo == 'Avioneta') {
-        if (alcance) productoMapeado.Alcance = alcance;
+        if (alcance) avionMapeado.Alcance = alcance;
       }
       else if (producto.Tipo == 'Helicoptero') {
-        if (facilidades) productoMapeado.Facilidades = String(facilidades);
+        if (facilidades) avionMapeado.Facilidades = String(facilidades);
       }
       else {
-        return res.status(400).json({ error: 'Tipo de producto no válido' });
+        return respuesta.status(400).json({ error: 'Tipo de producto no válido' });
       }
       
-      const resultado = await db.collection('Productos').updateOne(
-        { _id: new ObjectId(req.params.id) },
-        { $set: productoActualizado }
+      const res = await db.collection('Productos').updateOne(
+        { _id: new ObjectId(solicitud.params.id) },
+        { $set: avionActualizado }
       );
       
-      if (resultado.matchedCount === 0) {
-        return res.status(404).json({ error: 'Producto no encontrado' });
+      if (res.matchedCount === 0) {
+        return respuesta.status(404).json({ error: 'Producto no encontrado' });
       }
       
-      res.json({ 
+      respuesta.json({ 
         mensaje: 'Producto actualizado correctamente' 
       });
     } 
     catch (error) {
       console.error('Error al actualizar producto:', error);
-      res.status(500).json({ error: 'Error al actualizar producto' });
+      respuesta.status(500).json({ error: 'Error al actualizar producto' });
     }
   });
   
   // DELETE /productos/:id (admin)
-  router.delete('/productos:id', comprobarAdmin, async (req, res) => {
+  router.delete('/productos:id', comprobarAdmin, async (solicitud, respuesta) => {
     try {
-      const db = req.app.locals.db;
+      const db = solicitud.app.locals.db;
       
-      const resultado = await db.collection('Productos').deleteOne({ _id: new ObjectId(req.params.id) });
+      const res = await db.collection('Productos').deleteOne({ _id: new ObjectId(solicitud.params.id) });
       
-      if (resultado.deletedCount === 0) {
-        return res.status(404).json({ error: 'Producto no encontrado' });
+      if (res.deletedCount === 0) {
+        return respuesta.status(404).json({ error: 'Producto no encontrado' });
       }
-      res.json({ mensaje: 'Producto eliminado correctamente' });
+      respuesta.json({ mensaje: 'Producto eliminado correctamente' });
     } catch (error) {
       console.error('Error al eliminar producto:', error);
-      res.status(500).json({ error: 'Error al eliminar producto' });
+      respuesta.status(500).json({ error: 'Error al eliminar producto' });
     }
   });
   
   // DELETE /productos (admin)
-  router.delete('/productos', comprobarAdmin, async (req, res) => {
-    const { ids } = req.body;
+  router.delete('/productos', comprobarAdmin, async (solicitud, respuesta) => {
+    const { ids } = solicitud.body;
     
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ error: 'Array de IDs' });
+      return respuesta.status(400).json({ error: 'Array de IDs' });
     }
     
     try {
-      const db = req.app.locals.db;
+      const db = solicitud.app.locals.db;
       const objectIds = ids.map(id => new ObjectId(id));
-      const resultado = await db.collection('Productos').deleteMany({ _id: { $in: objectIds } });
+      const res = await db.collection('Productos').deleteMany({ _id: { $in: objectIds } });
       
-      if (resultado.deletedCount === 0) {
-        return res.status(404).json({ error: 'No se han encontrado productos para eliminar' });
+      if (res.deletedCount === 0) {
+        return respuesta.status(404).json({ error: 'No se han encontrado productos para eliminar' });
       }
       
-      res.json({ 
+      respuesta.json({ 
         mensaje: 'Productos eliminados satisfactoriamente',
-        eliminados: resultado.deletedCount
+        eliminados: res.deletedCount
       });
     } 
     catch (error) {
       console.error('Error al eliminar productos:', error);
-      res.status(500).json({ error: 'Error al eliminar productos' });
+      respuesta.status(500).json({ error: 'Error al eliminar productos' });
     }
   });
   
+export default router;

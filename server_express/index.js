@@ -1,13 +1,14 @@
-import express, { json, urlencoded } from 'express';
-import cors from 'cors';
 import { MongoClient } from 'mongodb';
 import session from 'express-session';
+import express, { json, urlencoded } from 'express';
+import cors from 'cors';
 
-import usuariosRuta from './rutas/usuarios';
-import productosRuta from './rutas/productos';
+import usuariosRuta from './rutas/usuarios.js';
+import productosRuta from './rutas/productos.js';
+import  MongoStore  from 'connect-mongo';
+import admin from 'firebase-admin';
 
 var aplicacion = express();
-var admin = require("firebase-admin");
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -16,13 +17,8 @@ admin.initializeApp({
 var PUERTO = process.env.PORT || 5000;
 
 // conexion a mongo???
-var MONGO_URI = 'mongodb://admin:admin@db:27017/tienda?authSource=admin';
+var LINK_DB = 'mongodb://admin:admin@bd:27017/tienda?authSource=admin';
 
-var mongojs = require('mongojs');
-var bd = mongojs(MONGO_URI, ['tienda']);
-
-aplicacion.set('view engine', 'ejs');
-aplicacion.set('views', 'views');
 
 // Middleware
 aplicacion.use(express.static('public'));
@@ -47,13 +43,12 @@ aplicacion.use(session({
   secret: 'clave_secreta_para_firmar_session',
   resave: false,
   saveUninitialized: false,
-  store: create({
-    mongoUrl: MONGO_URI,
-    // 24h de sesion
+  store: MongoStore.create({
+    mongoUrl: LINK_DB,
     ttl: 60 * 60 * 24,
-    autoRemove: 'native'
+    autoRemove: 'native' // guardar la sesion
   }),
-  // cookie
+  // cookies
   cookie: {
     secure: false,
     httpOnly: true,
@@ -62,46 +57,68 @@ aplicacion.use(session({
   }
 }));
 
-aplicacion.use('/api/usuarios', usuariosRuta);
-aplicacion.use('/api/productos', productosRuta);
+aplicacion.use('/usuarios', usuariosRuta);
+aplicacion.use('/productos', productosRuta);
 
-aplicacion.get('/', (req, res) => {
-  res.json({ 
+// GET / (comprobar app)
+aplicacion.get('/', (solicitud, respuesta) => {
+  respuesta.json({ 
     mensaje: 'Servidor funciona!',
 
-    session: req.session.email ? {
-      email: req.session.email,
-
-    } : 'No hay sesión activa'
+    session: solicitud.session.email ? {
+      email: solicitud.session.email,
+      visitas: solicitud.session.visitas || 0,
+    } : 'No hay sesion activa'
   });
 });
 
-aplicacion.get('/api/comprobar-sesion', (req, res) => {
-  if (req.session.email) {
-    res.json({ 
+// GET /comprobar-sesion 
+aplicacion.get('/comprobar-sesion', (solicitud, respuesta) => {
+  if (solicitud.session.email) {
+    respuesta.json({ 
       autenticado: true, 
-      email: req.session.email,
+      email: solicitud.session.email,
     });
   } else {
-    res.json({ autenticado: false });
+    respuesta.json({ autenticado: false });
   }
 });
 
 // config de iniciar servidor
 async function iniciarServidor() {
   try {
-    const client = new MongoClient(MONGO_URI);
+    const client = new MongoClient(LINK_DB);
         await client.connect();
-    console.log('Conexion correcta exitosa con MongoDB');
+    console.log('Conexion exitosa con MongoDB');
         aplicacion.locals.db = client.db('tienda');
     
     aplicacion.listen(PUERTO, () => {
-      console.log(`Servidor funcionando en el puerto ${PUERTO}`);
+      console.log(`Servidor funcionando, puerto ${PUERTO}`);
     });
   } catch (error) {
     console.error('Error al conectar con MongoDB:', error);
     process.exit(1);
   }
 }
+
+// POST /usuarios/anadir-visita
+aplicacion.post('/usuarios/anadir-visita', (solicitud, respuesta) => {
+  if (solicitud.session.email) {
+    if (!solicitud.session.visitas) {
+      solicitud.session.visitas = 1;
+    } else {
+      solicitud.session.visitas += 1;
+    }
+    solicitud.session.save(err => {
+      if (err) {
+        console.error('Error al guardar sesión:', err);
+        return respuesta.status(500).json({ error: 'Error al incrementar visitas' });
+      }
+      respuesta.json({ visitas: solicitud.session.visitas });
+    });
+  } else {
+    respuesta.status(401).json({ error: 'No hay sesión activa' });
+  }
+});
 
 iniciarServidor();
