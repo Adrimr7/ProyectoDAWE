@@ -90,7 +90,7 @@ router.post('/logout', (req, res) => {
 });
 
 // GET /perfil
-router.get('/perfil', verificarAutenticacion, async (req, res) => {
+router.get('/perfil', comprobarLogeo, async (req, res) => {
   try {
     const db = req.app.locals.db;
     const usuario = await db.collection('Usuarios').findOne({ Email: req.session.email });
@@ -118,7 +118,7 @@ router.get('/perfil', verificarAutenticacion, async (req, res) => {
 });
 
 // POST /incrementar-visitas
-router.post('/incrementar-visitas', verificarAutenticacion, (req, res) => {
+router.post('/incrementar-visitas', comprobarLogeo, (req, res) => {
   if (!req.session.visitas) {
     req.session.visitas = 1;
   } else {
@@ -138,7 +138,7 @@ router.post('/incrementar-visitas', verificarAutenticacion, (req, res) => {
 });
 
 // PUT /actualizar
-router.put('/actualizar', verificarAutenticacion, async (req, res) => {
+router.put('/actualizar', comprobarLogeo, async (req, res) => {
   // const { nombre, favoritos? } = req.body;
   const { nombre } = req.body;
   
@@ -190,7 +190,7 @@ router.put('/actualizar', verificarAutenticacion, async (req, res) => {
 });
 
 // POST /crear (admin)
-router.post('/crear', verificarAdmin, async (req, res) => {
+router.post('/crear', comprobarAdmin, async (req, res) => {
 
   const { nombre, email, rol} = req.body;
   
@@ -227,7 +227,7 @@ router.post('/crear', verificarAdmin, async (req, res) => {
 });
 
 // GET / (admin)
-router.get('/', verificarAdmin, async (req, res) => {
+router.get('/', comprobarAdmin, async (req, res) => {
   try {
     const db = req.app.locals.db;
     const usuarios = await db.collection('Usuarios').find({}).toArray();
