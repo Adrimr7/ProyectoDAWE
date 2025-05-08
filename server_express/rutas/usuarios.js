@@ -4,11 +4,11 @@ import { ObjectId } from 'mongodb';
 const router = Router();
 
 const comprobarLogeo = (req, res, next) => {
-    if (!req.session.email) {
-      return res.status(401).json({ error: 'Debes estar logeado para acceder' });
-    }
-    next();
-  };
+  if (!req.session.email) {
+    return res.status(401).json({ error: 'Debes estar logeado para acceder' });
+  }
+  next();
+};
   
 const comprobarAdmin = async (req, res, next) => {
   if (!req.session.email) {
@@ -76,7 +76,6 @@ router.post('/login', async (req, res) => {
 
 // POST /logout
 router.post('/logout', (req, res) => {
-
   const email = req.session.email;
   req.session.destroy((error) => {
     if (error) {
@@ -111,7 +110,8 @@ router.get('/perfil', comprobarLogeo, async (req, res) => {
       },
       visitas: req.session.visitas || 1
     });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error al obtener perfil:', error);
     res.status(500).json({ error: 'Error al obtener información del perfil' });
   }
@@ -121,7 +121,8 @@ router.get('/perfil', comprobarLogeo, async (req, res) => {
 router.post('/incrementar-visitas', comprobarLogeo, (req, res) => {
   if (!req.session.visitas) {
     req.session.visitas = 1;
-  } else {
+  } 
+  else {
     req.session.visitas += 1;
   }
   
@@ -139,7 +140,7 @@ router.post('/incrementar-visitas', comprobarLogeo, (req, res) => {
 
 // PUT /actualizar
 router.put('/actualizar', comprobarLogeo, async (req, res) => {
-  // const { nombre, favoritos? } = req.body;
+  // const { nombre, favoritos.... } = req.body;
   const { nombre } = req.body;
   
   if (!nombre || nombre.trim() === '') {
@@ -162,13 +163,10 @@ router.put('/actualizar', comprobarLogeo, async (req, res) => {
         } 
       }
     );
-    
     if (resultado.matchedCount === 0) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
-    
     req.session.nombre = nombre;
-    
     req.session.save((err) => {
       if (err) {
         console.error('Error al guardar la sesión después de actualizar perfil:', err);
@@ -197,7 +195,6 @@ router.post('/crear', comprobarAdmin, async (req, res) => {
   if (!nombre || !email || !rol) {
     return res.status(400).json({ error: 'Nombre, email y rol son campos obligatorios' });
   }
-  
   try {
     const db = req.app.locals.db;
     
@@ -241,7 +238,8 @@ router.get('/', comprobarAdmin, async (req, res) => {
     }));
     
     res.json(usuariosMapeados);
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error al obtener usuarios:', error);
     res.status(500).json({ error: 'Error al obtener lista de usuarios' });
   }
