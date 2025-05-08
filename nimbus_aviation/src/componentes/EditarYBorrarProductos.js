@@ -82,7 +82,7 @@ function EditarYBorrarProductos({borrarProducto, productos, isOnline}){
               <button
                 className="btn btn-danger"
                 onClick={() => {
-                  setProductos((prev) =>
+                  setProductosModificados((prev) =>
                     prev.filter((producto) => !seleccionados.includes(producto.id))
                   );
                   setSeleccionados([]);
