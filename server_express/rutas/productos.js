@@ -129,7 +129,8 @@ router.get('/productos', async (req, res) => {
       });
       
       res.json(productosMapeados);
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error al obtener productos:', error);
       res.status(500).json({ error: 'Error al obtener lista de productos' });
     }
@@ -168,7 +169,8 @@ router.get('/productos', async (req, res) => {
       }
       
       res.json(productoMapeado);
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error al obtener producto:', error);
       res.status(500).json({ error: 'Error al obtener información del producto' });
     }
@@ -184,7 +186,6 @@ router.get('/productos', async (req, res) => {
     
     try {
       const db = req.app.locals.db;
-
       const precioDouble = parseFloat(precio);
       if (isNaN(precioDouble)) {
         return res.status(400).json({ error: 'El precio debe ser un valor numérico válido' });
@@ -219,7 +220,8 @@ router.get('/productos', async (req, res) => {
         mensaje: 'Producto creado correctamente',
         id: resultado.insertedId
       });
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error al crear producto:', error);
             let mensajeError = 'Error al crear producto';
       if (error.errInfo && error.errInfo.details) {
@@ -315,7 +317,6 @@ router.get('/productos', async (req, res) => {
     
     try {
       const db = req.app.locals.db;
-      
       const objectIds = ids.map(id => new ObjectId(id));
       const resultado = await db.collection('Productos').deleteMany({ _id: { $in: objectIds } });
       
@@ -327,7 +328,8 @@ router.get('/productos', async (req, res) => {
         mensaje: 'Productos eliminados satisfactoriamente',
         eliminados: resultado.deletedCount
       });
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error al eliminar productos:', error);
       res.status(500).json({ error: 'Error al eliminar productos' });
     }
