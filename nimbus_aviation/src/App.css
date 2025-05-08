@@ -90,3 +90,26 @@ body {
   fill: #ffffff !important;  /* Rojo de Bootstrap */
   stroke: rgb(4, 8, 235) !important; /* Si usa bordes */
 }
+
+/*  INTENTO DE ESTIRAR EL DRAG AND DROP AREA  
+#mi-file-uploader > label {
+  width: 100% !important;
+  display: block !important;
+  border: 2px dashed #0658C2;
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+#mi-file-uploader > label > div {
+  width: 100% !important;
+  display: block !important;
+}
+
+#mi-file-uploader svg {
+  display: block;
+  margin: 0 auto 10px auto;
+}
+
+*/

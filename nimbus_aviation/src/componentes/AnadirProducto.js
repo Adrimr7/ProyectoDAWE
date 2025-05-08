@@ -4,16 +4,12 @@ import FormularioNuevosProductos from "./FormularioNuevosProductos"
 function AnadirProducto({ addProduct, isOnline }) {
   return (
     <div id="anadir-producto" className="col-md-8">
-      <div className="row">
-        <div className="col-md-8">
-          <div className="card">
-            <div className="card-header bg-primary text-white">
-              <h2 className="mb-0 text-center">Formulario para agregar productos</h2>
-            </div>
-            <div className="card-body">
-              <FormularioNuevosProductos addProduct={addProduct} isOnline={isOnline} />
-            </div>
-          </div>
+      <div className="card">
+        <div className="card-header bg-primary text-white">
+          <h2 className="mb-0 text-center">Formulario para agregar productos</h2>
+        </div>
+        <div className="card-body">
+          <FormularioNuevosProductos addProduct={addProduct} isOnline={isOnline} />
         </div>
       </div>
     </div>
