@@ -7,6 +7,11 @@ import usuariosRuta from './rutas/usuarios';
 import productosRuta from './rutas/productos';
 
 var aplicacion = express();
+var admin = require("firebase-admin");
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+});
 
 var PUERTO = process.env.PORT || 5000;
 
