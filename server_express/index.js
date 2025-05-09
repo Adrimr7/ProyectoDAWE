@@ -17,7 +17,7 @@ admin.initializeApp({
 var PUERTO = process.env.PORT || 5000;
 
 // conexion a mongo???
-var LINK_DB = 'mongodb://admin:admin@bd:27017/tienda?authSource=admin';
+var LINK_DB = process.env.MONGO_URI || 'mongodb://admin:admin@localhost:27017/tienda?authSource=admin';
 
 
 // Middleware
@@ -56,6 +56,12 @@ aplicacion.use(session({
     maxAge: 1000 * 60 * 60 * 24,
   }
 }));
+
+aplicacion.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 
 aplicacion.use('/usuarios', usuariosRuta);
 aplicacion.use('/productos', productosRuta);

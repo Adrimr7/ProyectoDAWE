@@ -1,247 +1,145 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
+import admin from 'firebase-admin';
 import { ObjectId } from 'mongodb';
 
 const router = Router();
 
-const comprobarLogeo = (req, res, next) => {
-  if (!req.session.email) {
-    return res.status(401).json({ error: 'Debes estar logeado para acceder' });
-  }
-  next();
-};
-  
-const comprobarAdmin = async (req, res, next) => {
-  if (!req.session.email) {
-    return res.status(401).json({ error: 'Debes estar logeado para acceder' });
-  }
-  
-  const db = req.app.locals.db;
-  const usuario = await db.collection('Usuarios').findOne({ Email: req.session.email });
-  
-  if (!usuario || usuario.Rol !== 'administrador') {
-    return res.status(403).json({ error: 'No tienes permisos para acceder a este recurso' });
-  }
-  
-  next();
-};
-
-// POST /login 
+// POST /usuarios/login
 router.post('/login', async (req, res) => {
-  const { email } = req.body;
-  
-  if (!email) {
-    return res.status(400).json({ error: 'Email obligatorio' });
+  const { idToken } = req.body;
+  if (!idToken) {
+    return res.status(400).json({ error: 'Falta idToken en la petición' });
   }
-  
+
   try {
+    // 1) Verificar token con Firebase Admin
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    const email  = decoded.email;
+    const nombre = decoded.name || email.split('@')[0];
+
     const db = req.app.locals.db;
-    const usuario = await db.collection('Usuarios').findOne({ Email: email });
-    
+    const usuariosCol = db.collection('usuarios');
+
+    // 2) Buscar o crear usuario en MongoDB
+    let usuario = await usuariosCol.findOne({ email });
     if (!usuario) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+      const nuevo = {
+        email,
+        nombre,
+        rol: '',
+        visitas: 1,
+        telefono: '',
+        direccion: '',
+        fechaNacimiento: null
+      };
+      const result = await usuariosCol.insertOne(nuevo);
+      usuario = { _id: result.insertedId, ...nuevo };
+    } else {
+      // Reiniciar contador de visitas a 1
+      await usuariosCol.updateOne(
+        { _id: usuario._id },
+        { $set: { visitas: 1 } }
+      );
+      usuario.visitas = 1;
     }
-    
-    req.session.email = usuario.Email;
-    req.session.nombre = usuario.Nombre;
-    req.session.rol = usuario.Rol;
-    // contador de visitas
-    req.session.visitas = 0;
-    req.session.ultimaVisitaRegistrada = Date.now();
-    
-    req.session.save((err) => {
-      if (err) {
-        console.error('Error al guardar la sesión:', err);
-        return res.status(500).json({ error: 'Error al iniciar sesión' });
-      }
-            console.log('Sesión iniciada para:', usuario.Email);
-      console.log('ID de sesión:', req.sessionID);
-      
-      res.json({
-        mensaje: 'Inicio de sesión exitoso',
-        usuario: {
-          id: usuario._id,
-          nombre: usuario.Nombre,
-          email: usuario.Email,
-          rol: usuario.Rol,
-          // favoritos? 
-        },
-        visitas: req.session.visitas
-      });
+
+    // 3) Configurar sesión
+    req.session.userId  = usuario._id.toString();
+    req.session.email   = usuario.email;
+    req.session.nombre  = usuario.nombre;
+    req.session.rol     = usuario.rol;
+    req.session.visitas = usuario.visitas;
+    await req.session.save();
+
+    // 4) Responder con datos de usuario
+    res.json({
+      userId:  usuario._id,
+      email:   usuario.email,
+      nombre:  usuario.nombre,
+      rol:     usuario.rol,
+      visitas: usuario.visitas
     });
   } catch (error) {
-    console.error('Error al iniciar sesión:', error);
-    res.status(500).json({ error: 'Error al iniciar sesión' });
+    console.error('Error en POST /login:', error);
+    res.status(401).json({ error: 'Token inválido o expirado' });
   }
 });
 
-// POST /logout
-router.post('/logout', (req, res) => {
-  const email = req.session.email;
-  req.session.destroy((error) => {
-    if (error) {
-      console.error('Error al cerrar sesión:', error);
-      return res.status(500).json({ error: 'Error al cerrar sesión' });
-    }
-    console.log('Sesión cerrada para:', email);
-    res.clearCookie('connect.sid');
-    res.json({ mensaje: 'Sesión cerrada correctamente' });
-  });
-});
-
-// GET /perfil
-router.get('/perfil', comprobarLogeo, async (req, res) => {
+// GET /usuarios/me
+router.get('/me', async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'No autenticado' });
+  }
   try {
     const db = req.app.locals.db;
-    const usuario = await db.collection('Usuarios').findOne({ Email: req.session.email });
-    
+    const userId = new ObjectId(req.session.userId);
+    const usuario = await db.collection('usuarios').findOne({ _id: userId });
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
-    
-    console.log(`Perfil solicitado para: ${usuario.Email} - Visitas: ${req.session.visitas || 1}`);
-    
+
     res.json({
-      usuario: {
-        id: usuario._id,
-        nombre: usuario.Nombre,
-        email: usuario.Email,
-        rol: usuario.Rol,
-        // favoritos? 
-      },
-      visitas: req.session.visitas || 1
+      userId:        usuario._id,
+      email:         usuario.email,
+      nombre:        usuario.nombre,
+      rol:           usuario.rol,
+      visitas:       req.session.visitas,
+      telefono:      usuario.telefono,
+      direccion:     usuario.direccion,
+      fechaNacimiento: usuario.fechaNacimiento
     });
-  } 
-  catch (error) {
-    console.error('Error al obtener perfil:', error);
-    res.status(500).json({ error: 'Error al obtener información del perfil' });
+  } catch (error) {
+    console.error('Error en GET /me:', error);
+    res.status(500).json({ error: 'Error al obtener datos del usuario' });
   }
 });
 
-// POST /incrementar-visitas
-router.post('/incrementar-visitas', comprobarLogeo, (req, res) => {
-  if (!req.session.visitas) {
-    req.session.visitas = 1;
-  } 
-  else {
-    req.session.visitas += 1;
-  }
-  
-  req.session.ultimaVisitaRegistrada = Date.now();
-  req.session.save((err) => {
-    if (err) {
-      console.error('Error al guardar sesión:', err);
-      return res.status(500).json({ error: 'Error al incrementar visitas' });
-    }
-    
-    console.log(`Visita incrementada para ${req.session.email} - Nuevo valor: ${req.session.visitas}`);
-    res.json({ visitas: req.session.visitas });
-  });
-});
+// PUT /usuarios/:id
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { nombre, telefono, direccion, fechaNacimiento } = req.body;
 
-// PUT /actualizar
-router.put('/actualizar', comprobarLogeo, async (req, res) => {
-  // const { nombre, favoritos.... } = req.body;
-  const { nombre } = req.body;
-  
-  if (!nombre || nombre.trim() === '') {
+  if (!req.session.userId || req.session.userId !== id) {
+    return res.status(403).json({ error: 'No autorizado' });
+  }
+  if (!nombre || !nombre.trim()) {
     return res.status(400).json({ error: 'El nombre no puede estar vacío' });
   }
-  
+
   try {
     const db = req.app.locals.db;
-    /*
-        animalFavorito: animalFavorito || '',
-        libroFavorito: libroFavorito || '',
-        generoFavorito: generoFavorito || '',
-    */
-    const resultado = await db.collection('Usuarios').updateOne(
-      { Email: req.session.email },
-      { 
-        $set: { 
-          Nombre: nombre,
-          // favoritos?
-        } 
-      }
+    const update = {
+      nombre:        nombre.trim(),
+      telefono:      telefono || '',
+      direccion:     direccion || '',
+      fechaNacimiento: fechaNacimiento || null
+    };
+
+    await db.collection('usuarios').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: update }
     );
-    if (resultado.matchedCount === 0) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
-    }
-    req.session.nombre = nombre;
-    req.session.save((err) => {
-      if (err) {
-        console.error('Error al guardar la sesión después de actualizar perfil:', err);
-      }
-      
-      res.json({ 
-        mensaje: 'Perfil actualizado correctamente',
-        usuario: {
-          nombre,
-          email: req.session.email,
-          rol: req.session.rol,
-        } 
-      });
+
+    // Actualizar sesión
+    req.session.nombre        = update.nombre;
+    req.session.telefono      = update.telefono;
+    req.session.direccion     = update.direccion;
+    req.session.fechaNacimiento = update.fechaNacimiento;
+    await req.session.save();
+
+    res.json({
+      userId:          id,
+      email:           req.session.email,
+      nombre:          update.nombre,
+      rol:             req.session.rol,
+      visitas:         req.session.visitas,
+      telefono:        update.telefono,
+      direccion:       update.direccion,
+      fechaNacimiento: update.fechaNacimiento
     });
   } catch (error) {
-    console.error('Error al actualizar perfil:', error);
-    res.status(500).json({ error: 'Error al actualizar información del perfil' });
-  }
-});
-
-// POST /crear (admin)
-router.post('/crear', comprobarAdmin, async (req, res) => {
-
-  const { nombre, email, rol} = req.body;
-  
-  if (!nombre || !email || !rol) {
-    return res.status(400).json({ error: 'Nombre, email y rol son campos obligatorios' });
-  }
-  try {
-    const db = req.app.locals.db;
-    
-    const usuarioExistente = await db.collection('Usuarios').findOne({ Email: email });
-    if (usuarioExistente) {
-      return res.status(400).json({ error: 'Ya existe un usuario con ese email' });
-    }
-    
-    const nuevoUsuario = {
-      Nombre: nombre,
-      Email: email,
-      Rol: rol,
-      // favoritos?
-    };
-    
-    const resultado = await db.collection('Usuarios').insertOne(nuevoUsuario);
-    
-    res.status(201).json({ 
-      mensaje: 'Usuario creado correctamente',
-      id: resultado.insertedId
-    });
-  } 
-  catch (error) {
-    console.error('Error al crear usuario:', error);
-    res.status(500).json({ error: 'Error al crear usuario' });
-  }
-});
-
-// GET / (admin)
-router.get('/', comprobarAdmin, async (req, res) => {
-  try {
-    const db = req.app.locals.db;
-    const usuarios = await db.collection('Usuarios').find({}).toArray();
-    
-    const usuariosMapeados = usuarios.map(usuario => ({
-      id: usuario._id,
-      nombre: usuario.Nombre,
-      email: usuario.Email,
-      rol: usuario.Rol,
-      // favoritos?
-    }));
-    
-    res.json(usuariosMapeados);
-  } 
-  catch (error) {
-    console.error('Error al obtener usuarios:', error);
-    res.status(500).json({ error: 'Error al obtener lista de usuarios' });
+    console.error('Error en PUT /:id:', error);
+    res.status(500).json({ error: 'Error al actualizar usuario' });
   }
 });
 
