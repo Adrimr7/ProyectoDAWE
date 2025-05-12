@@ -13,6 +13,9 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
   const [extra, setExtra] = useState("")
   const [imagen, setImagen] = useState(null)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [mensaje, setMensaje] = useState("");
+  const [error, setError] = useState("");
+
 
   const fileInputRef = useRef(null)
 
@@ -38,74 +41,60 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
     }
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    if (!tipo || !nombre || isNaN(Number.parseFloat(precio)) || !extra) {
-      alert("Por favor, rellena todos los campos obligatorios.")
-      return
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!nombre || !precio || !descripcion) {
+      setError("Por favor, completa todos los campos obligatorios.");
+      return;
     }
-
-    const precioNum = Number.parseFloat(precio)
-    const imagenUrl = imagen ? URL.createObjectURL(imagen) : IMAGEN_POR_DEFECTO
-
-    let nuevoProducto
-
-    if (tipo === "Jet Grande" || tipo === "Jet Mediano" || tipo === "Jet Pequeño") {
-      const numPasajeros = Number.parseInt(extra)
-      if (isNaN(numPasajeros)) {
-        alert("Por favor, ingresa un número válido para el número de pasajeros.")
-        return
+  
+    const nuevoProducto = {
+      tipo,
+      nombre,
+      precio,
+      descripcion,
+      extra,
+      imagen: imagen?.name || IMAGEN_POR_DEFECTO
+    };
+  
+    try {
+      const respuesta = await fetch("http://localhost:5000/productos/crear", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(nuevoProducto)
+      });
+    
+      if (respuesta.ok) {
+        const creado = await respuesta.json();
+        addProduct(creado);
+        setMensaje("Producto añadido correctamente.");
+        setTipo("Jet Grande");
+        setNombre("");
+        setPrecio("");
+        setDescripcion("");
+        setExtra("");
+        setImagen(null);
+        setTimeout(() => setMensaje(""), 3000);
+      } else {
+        setError("Error al añadir el producto.");
+        setTimeout(() => setError(""), 3000);
       }
-
-      if (tipo === "Jet Grande") {
-        nuevoProducto = new JetGrande(nombre, precioNum, descripcion, imagenUrl, numPasajeros)
-      } else if (tipo === "Jet Mediano") {
-        nuevoProducto = new JetMediano(nombre, precioNum, descripcion, imagenUrl, numPasajeros)
-      } else if (tipo === "Jet Pequeño") {
-        nuevoProducto = new JetPequeno(nombre, precioNum, descripcion, imagenUrl, numPasajeros)
-      }
-    } else if (tipo === "Avioneta") {
-      const alcanceKm = Number.parseFloat(extra)
-      if (isNaN(alcanceKm)) {
-        alert("Por favor, ingresa un número válido para el alcance en km.")
-        return
-      }
-      nuevoProducto = new Avioneta(nombre, precioNum, descripcion, imagenUrl, alcanceKm)
-    } else if (tipo === "Helicóptero") {
-      const facilidades = extra
-        .split(",")
-        .map((f) => f.trim())
-        .filter((f) => f !== "")
-      if (facilidades.length === 0) {
-        alert("Por favor, ingresa al menos una facilidad.")
-        return
-      }
-      nuevoProducto = new Helicoptero(nombre, precioNum, descripcion, imagenUrl, facilidades)
-    } else {
-      alert("Tipo de producto no válido")
-      return
+    } catch (err) {
+      setError("Error de conexión con el servidor.");
+      setTimeout(() => setError(""), 3000);
     }
+  };
 
-    addProduct(nuevoProducto)
 
-    setNombre("")
-    setPrecio("")
-    setDescripcion("")
-    setExtra("")
-    setImagen(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
-
-    setShowSuccess(true)
-    setTimeout(() => {
-      setShowSuccess(false)
-    }, 2000)
-  }
 
   return (
     <div className="w-100">
+      {mensaje && <div className="alert alert-success">{mensaje}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
       <form id="formulario-jet" onSubmit={handleSubmit} className="mx-auto" style={{ maxWidth: '95%' }}>
         <div className="mb-3">
           <select

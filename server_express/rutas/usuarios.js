@@ -1,146 +1,142 @@
-import { Router } from 'express';
-import admin from 'firebase-admin';
-import { ObjectId } from 'mongodb';
+import express from "express";
+import { ObjectId } from "mongodb";
+const router = express.Router();
 
-const router = Router();
+// Ruta para comprobar sesión
+router.get("/comprobar-sesion", (req, res) => {
+  res.json({ autenticado: !!req.session.userId });
+});
 
-// POST /usuarios/login
-router.post('/login', async (req, res) => {
-  const { idToken } = req.body;
-  if (!idToken) {
-    return res.status(400).json({ error: 'Falta idToken en la petición' });
-  }
-
+// Ruta para login con Firebase
+router.post("/login", async (req, res) => {
   try {
-    // 1) Verificar token con Firebase Admin
-    const decoded = await admin.auth().verifyIdToken(idToken);
-    const email  = decoded.email;
-    const nombre = decoded.name || email.split('@')[0];
+    const { idToken } = req.body;
+    if (!idToken) return res.status(400).json({ error: "Token no proporcionado" });
 
+    const { getAuth } = await import("firebase-admin/auth");
+    const auth = getAuth();
+    const decodedToken = await auth.verifyIdToken(idToken);
+
+    const email = decodedToken.email;
     const db = req.app.locals.db;
-    const usuariosCol = db.collection('usuarios');
 
-    // 2) Buscar o crear usuario en MongoDB
-    let usuario = await usuariosCol.findOne({ email });
+    let usuario = await db.collection("usuarios").findOne({ email });
+
     if (!usuario) {
-      const nuevo = {
+      const nuevoUsuario = {
         email,
-        nombre,
-        rol: '',
+        nombre: email.split("@")[0],
+        rol: "",
         visitas: 1,
-        telefono: '',
-        direccion: '',
+        telefono: "",
+        direccion: "",
         fechaNacimiento: null
       };
-      const result = await usuariosCol.insertOne(nuevo);
-      usuario = { _id: result.insertedId, ...nuevo };
+      const resultado = await db.collection("usuarios").insertOne(nuevoUsuario);
+      usuario = { _id: resultado.insertedId, ...nuevoUsuario };
     } else {
-      // Reiniciar contador de visitas a 1
-      await usuariosCol.updateOne(
+      await db.collection("usuarios").updateOne(
         { _id: usuario._id },
         { $set: { visitas: 1 } }
       );
-      usuario.visitas = 1;
     }
 
-    // 3) Configurar sesión
-    req.session.userId  = usuario._id.toString();
-    req.session.email   = usuario.email;
-    req.session.nombre  = usuario.nombre;
-    req.session.rol     = usuario.rol;
-    req.session.visitas = usuario.visitas;
+    req.session.userId = usuario._id.toString();
+    req.session.email = usuario.email;
+    req.session.nombre = usuario.nombre;
+    req.session.rol = usuario.rol;
+
     await req.session.save();
 
-    // 4) Responder con datos de usuario
     res.json({
-      userId:  usuario._id,
-      email:   usuario.email,
-      nombre:  usuario.nombre,
-      rol:     usuario.rol,
-      visitas: usuario.visitas
+      userId: usuario._id.toString(),
+      email: usuario.email,
+      nombre: usuario.nombre,
+      rol: usuario.rol,
+      visitas: req.session.visitas
     });
-  } catch (error) {
-    console.error('Error en POST /login:', error);
-    res.status(401).json({ error: 'Token inválido o expirado' });
+  } catch (err) {
+    console.error("Error en POST /login:", err);
+    res.status(500).json({ error: "Error en login" });
   }
 });
 
-// GET /usuarios/me
-router.get('/me', async (req, res) => {
+// Ruta para obtener datos del usuario autenticado
+router.get("/me", async (req, res) => {
   if (!req.session.userId) {
-    return res.status(401).json({ error: 'No autenticado' });
+    return res.status(401).json({ error: "No autenticado" });
   }
-  try {
-    const db = req.app.locals.db;
-    const userId = new ObjectId(req.session.userId);
-    const usuario = await db.collection('usuarios').findOne({ _id: userId });
-    if (!usuario) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
-    }
 
-    res.json({
-      userId:        usuario._id,
-      email:         usuario.email,
-      nombre:        usuario.nombre,
-      rol:           usuario.rol,
-      visitas:       req.session.visitas,
-      telefono:      usuario.telefono,
-      direccion:     usuario.direccion,
-      fechaNacimiento: usuario.fechaNacimiento
-    });
-  } catch (error) {
-    console.error('Error en GET /me:', error);
-    res.status(500).json({ error: 'Error al obtener datos del usuario' });
+  const db = req.app.locals.db;
+  const usuario = await db.collection("usuarios").findOne({ _id: new ObjectId(req.session.userId) });
+
+  if (!usuario) {
+    return res.status(404).json({ error: "Usuario no encontrado" });
   }
+
+  if (typeof req.session.visitas === "undefined") {
+    req.session.visitas = 1;
+  } else {
+    req.session.visitas++;
+  }
+  await req.session.save();
+
+  res.json({
+    userId: req.session.userId,
+    email: usuario.email,
+    nombre: usuario.nombre,
+    rol: usuario.rol,
+    visitas: req.session.visitas,
+    direccion: usuario.direccion,
+    telefono: usuario.telefono,
+    fechaNacimiento: usuario.fechaNacimiento
+  });
 });
 
-// PUT /usuarios/:id
-router.put('/:id', async (req, res) => {
+// Ruta para actualizar datos del usuario
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { nombre, telefono, direccion, fechaNacimiento } = req.body;
-
   if (!req.session.userId || req.session.userId !== id) {
-    return res.status(403).json({ error: 'No autorizado' });
+    return res.status(403).json({ error: "No autorizado" });
   }
+
+  const { nombre, direccion, telefono, fechaNacimiento } = req.body;
   if (!nombre || !nombre.trim()) {
-    return res.status(400).json({ error: 'El nombre no puede estar vacío' });
+    return res.status(400).json({ error: "Nombre requerido" });
   }
 
-  try {
-    const db = req.app.locals.db;
-    const update = {
-      nombre:        nombre.trim(),
-      telefono:      telefono || '',
-      direccion:     direccion || '',
-      fechaNacimiento: fechaNacimiento || null
-    };
+  const db = req.app.locals.db;
+  await db.collection("usuarios").updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { nombre, direccion, telefono, fechaNacimiento } }
+  );
 
-    await db.collection('usuarios').updateOne(
-      { _id: new ObjectId(id) },
-      { $set: update }
-    );
+  req.session.nombre = nombre;
+  req.session.direccion = direccion;
+  req.session.telefono = telefono;
+  req.session.fechaNacimiento = fechaNacimiento;
 
-    // Actualizar sesión
-    req.session.nombre        = update.nombre;
-    req.session.telefono      = update.telefono;
-    req.session.direccion     = update.direccion;
-    req.session.fechaNacimiento = update.fechaNacimiento;
-    await req.session.save();
+  await req.session.save();
 
-    res.json({
-      userId:          id,
-      email:           req.session.email,
-      nombre:          update.nombre,
-      rol:             req.session.rol,
-      visitas:         req.session.visitas,
-      telefono:        update.telefono,
-      direccion:       update.direccion,
-      fechaNacimiento: update.fechaNacimiento
-    });
-  } catch (error) {
-    console.error('Error en PUT /:id:', error);
-    res.status(500).json({ error: 'Error al actualizar usuario' });
-  }
+  res.json({
+    email: req.session.email,
+    nombre,
+    direccion,
+    telefono,
+    fechaNacimiento
+  });
+});
+
+// Ruta para logout
+router.post("/logout", (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error("Error al cerrar sesión:", err);
+      return res.status(500).json({ error: "Error al cerrar sesión" });
+    }
+    res.clearCookie("connect.sid");
+    res.json({ mensaje: "Sesión cerrada" });
+  });
 });
 
 export default router;

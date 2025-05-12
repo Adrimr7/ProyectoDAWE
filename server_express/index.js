@@ -7,11 +7,15 @@ import usuariosRuta from './rutas/usuarios.js';
 import productosRuta from './rutas/productos.js';
 import  MongoStore  from 'connect-mongo';
 import admin from 'firebase-admin';
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+
+const serviceAccount = require("./firebase-adminsdk.json");
 
 var aplicacion = express();
 
 admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
+  credential: admin.credential.cert(serviceAccount)
 });
 
 var PUERTO = process.env.PORT || 5000;

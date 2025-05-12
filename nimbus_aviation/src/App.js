@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import Cabecera from "./componentes/Cabecera"
 import EscaparateProductos from "./componentes/EscaparateProductos"
-import FormularioNuevosProductos from "./componentes/FormularioNuevosProductos"
 import Pie from "./componentes/Pie"
 import Carrito from "./componentes/Carrito"
 import { productos as initialProductos, guardarEnCarrito, borrarDelCarrito, cargarCarrito } from "./tienda/tienda"
@@ -11,7 +10,7 @@ import "./App.css"
 import MiCuenta from "./componentes/MiCuenta"
 import AnadirProducto from "./componentes/AnadirProducto"
 import EditarYBorrarProductos from "./componentes/EditarYBorrarProductos"
-import Login from "./componentes/Login"
+import PanelLateral from "./componentes/PanelLateral"
 
 function App() {
   const [productos, setProductos] = useState(initialProductos)
@@ -134,7 +133,7 @@ function App() {
           
           {/* Formulario de login (siempre visible) - Lado derecho */}
           <div className="col-md-4">
-            <Login />
+            <PanelLateral />
           </div>
         </div>
       </div>
