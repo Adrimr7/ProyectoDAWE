@@ -24,6 +24,8 @@ function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [seccionActiva, setSeccionActiva] = useState("inicio")
   const [usuario, setUsuario] = useState(null);
+  const [autenticado, setAutenticado] = useState(false);
+
 
   useEffect(() => {
     setProductos(initialProductos);
@@ -39,6 +41,16 @@ function App() {
     recargarProductos();
   }, []);
 
+  useEffect(() => {
+    fetch("http://localhost:5000/comprobar-sesion", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => setAutenticado(data.autenticado))
+      .catch(() => setAutenticado(false));
+  }, []);
+  
+
 
 
   useEffect(() => {
@@ -50,20 +62,20 @@ function App() {
   }, []);
 
 
-  // 🔹 Cargar el carrito desde localStorage al inicio
+  //Cargar el carrito desde localStorage al inicio
   useEffect(() => {
     const carritoCargado = cargarCarrito()
     setCarrito(carritoCargado)
   }, [])
 
-  // 🔹 Guardar el carrito en localStorage cada vez que cambie
+  //Guardar el carrito en localStorage cada vez que cambie
   useEffect(() => {
     Object.keys(carrito).forEach((productoId) => {
       guardarEnCarrito(productoId, carrito[productoId])
     })
   }, [carrito])
 
-  // 🔹 Manejar el estado de conexión
+  //Manejar el estado de conexión
   useEffect(() => {
     const handleOnline = () => setIsOnline(true)
     const handleOffline = () => setIsOnline(false)
@@ -168,7 +180,7 @@ function App() {
           
           {/* Formulario de login (siempre visible) - Lado derecho */}
           <div className="col-md-4">
-            <PanelLateral />
+            <PanelLateral autenticado={autenticado} setAutenticado={setAutenticado} />
           </div>
         </div>
       </div>

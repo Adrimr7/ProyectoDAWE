@@ -1,35 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { getAuth, signOut } from "firebase/auth";
 
-function UserPanel() {
+function UserPanel({ onLogout }) {
   const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/usuarios/me", {
-      credentials: "include"
-    })
-      .then(res => res.ok ? res.json() : null)
-      .then(data => setUsuario(data))
+    fetch("http://localhost:5000/usuarios/me", { credentials: "include" })
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => setUsuario(data))
       .catch(() => setUsuario(null));
   }, []);
 
   const handleLogout = async () => {
-    try {
-      const auth = getAuth();
-      await signOut(auth);
-
-      await fetch("http://localhost:5000/usuarios/logout", {
-        method: "POST",
-        credentials: "include"
-      });
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 200); // Espera 200 ms antes de recargar
-      
-    } catch (err) {
-      console.error("Error al cerrar sesión:", err);
-    }
+    const auth = getAuth();
+    await signOut(auth);
+    await fetch("http://localhost:5000/usuarios/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    onLogout();  //Informa a App de que ha cerrado sesión
   };
 
   if (!usuario) return <p>Cargando usuario...</p>;

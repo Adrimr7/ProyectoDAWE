@@ -1,19 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Login from "./Login";
 import UserPanel from "./UserPanel";
 
-function PanelLateral() {
-  const [autenticado, setAutenticado] = useState(false);
-
-  useEffect(() => {
-    fetch("http://localhost:5000/comprobar-sesion", {
-      credentials: "include"
-    })
-      .then(res => res.json())
-      .then(data => setAutenticado(data.autenticado));
-  }, []);
-
-  return autenticado ? <UserPanel /> : <Login />;
+function PanelLateral({ autenticado, setAutenticado }) {
+  return autenticado 
+    ? <UserPanel onLogout={() => setAutenticado(false)} /> 
+    : <Login onLogin={() => setAutenticado(true)} />;
 }
 
 export default PanelLateral;
