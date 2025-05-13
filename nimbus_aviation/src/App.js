@@ -110,9 +110,11 @@ function App() {
     })
   }
 
-  const addProduct = (newProduct) => {
-    setProductos((prevProductos) => [...prevProductos, newProduct])
-  }
+  const addProduct = (nuevo) => {
+    setInitialProductos((prev) => [...prev, nuevo]);
+    setProductos((prev) => [...prev, nuevo]);
+  };
+  
 
   const toggleCart = () => {
     setShowCart(!showCart)

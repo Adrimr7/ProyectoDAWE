@@ -43,31 +43,34 @@ function FormularioNuevosProductos({ addProduct, isOnline, recargarProductos }) 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!nombre || !precio || !descripcion) {
       setError("Por favor, completa todos los campos obligatorios.");
       return;
     }
-  
+
+    const tipoNormalizado = tipo
+      .toLowerCase()
+      .replace(" ", "")
+      .replace("ñ", "n");
+
     const formData = new FormData();
-    formData.append("tipo", tipo);
+    formData.append("tipo", tipoNormalizado);
     formData.append("nombre", nombre);
     formData.append("precio", precio);
     formData.append("descripcion", descripcion);
     if (imagen) formData.append("imagen", imagen);
     formData.append("extra", extra);
-  
+
     try {
       const respuesta = await fetch("http://localhost:5000/productos", {
         method: "POST",
         credentials: "include",
         body: formData
       });
-    
+
       if (respuesta.ok) {
-        const creado = await respuesta.json();
-        addProduct(creado);
-        recargarProductos();
+        await recargarProductos();
         setMensaje("Producto añadido correctamente.");
         setTipo("Jet Grande");
         setNombre("");
@@ -87,8 +90,6 @@ function FormularioNuevosProductos({ addProduct, isOnline, recargarProductos }) 
       setTimeout(() => setError(""), 3000);
     }
   };
-
-
 
 
   return (
