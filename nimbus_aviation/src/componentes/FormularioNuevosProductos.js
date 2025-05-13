@@ -5,7 +5,7 @@ import { FileUploader } from "react-drag-drop-files"
 import { JetGrande, JetMediano, JetPequeno, Avioneta, Helicoptero } from "../tienda/tienda"
 import { IMAGEN_POR_DEFECTO } from "../tienda/utils"
 
-function FormularioNuevosProductos({ addProduct, isOnline }) {
+function FormularioNuevosProductos({ addProduct, isOnline, recargarProductos }) {
   const [tipo, setTipo] = useState("Jet Grande")
   const [nombre, setNombre] = useState("")
   const [precio, setPrecio] = useState("")
@@ -49,28 +49,25 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
       return;
     }
   
-    const nuevoProducto = {
-      tipo,
-      nombre,
-      precio,
-      descripcion,
-      extra,
-      imagen: imagen?.name || IMAGEN_POR_DEFECTO
-    };
+    const formData = new FormData();
+    formData.append("tipo", tipo);
+    formData.append("nombre", nombre);
+    formData.append("precio", precio);
+    formData.append("descripcion", descripcion);
+    if (imagen) formData.append("imagen", imagen);
+    formData.append("extra", extra);
   
     try {
-      const respuesta = await fetch("http://localhost:5000/productos/crear", {
+      const respuesta = await fetch("http://localhost:5000/productos", {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(nuevoProducto)
+        body: formData
       });
     
       if (respuesta.ok) {
         const creado = await respuesta.json();
         addProduct(creado);
+        recargarProductos();
         setMensaje("Producto añadido correctamente.");
         setTipo("Jet Grande");
         setNombre("");
@@ -80,6 +77,8 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
         setImagen(null);
         setTimeout(() => setMensaje(""), 3000);
       } else {
+        const textoError = await respuesta.text();
+        console.error("Error desde el backend:", textoError);
         setError("Error al añadir el producto.");
         setTimeout(() => setError(""), 3000);
       }
@@ -88,6 +87,7 @@ function FormularioNuevosProductos({ addProduct, isOnline }) {
       setTimeout(() => setError(""), 3000);
     }
   };
+
 
 
 

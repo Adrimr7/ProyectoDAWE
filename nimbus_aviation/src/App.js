@@ -13,6 +13,7 @@ import EditarYBorrarProductos from "./componentes/EditarYBorrarProductos"
 import PanelLateral from "./componentes/PanelLateral"
 
 function App() {
+  const [initialProductos, setInitialProductos] = useState([]);
   const [productos, setProductos] = useState(initialProductos)
   const [carrito, setCarrito] = useState({})
   const [filtroTipo, setFiltroTipo] = useState(null)
@@ -22,6 +23,32 @@ function App() {
   const [showCart, setShowCart] = useState(false)
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [seccionActiva, setSeccionActiva] = useState("inicio")
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    setProductos(initialProductos);
+  }, [initialProductos]);  
+  
+  const recargarProductos = async () => {
+    const res = await fetch("http://localhost:5000/productos");
+    const data = await res.json();
+    setInitialProductos(data);
+  };
+
+  useEffect(() => {
+    recargarProductos();
+  }, []);
+
+
+
+  useEffect(() => {
+    fetch("http://localhost:5000/usuarios/me", {
+      credentials: "include"
+    })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setUsuario(data));
+  }, []);
+
 
   // 🔹 Cargar el carrito desde localStorage al inicio
   useEffect(() => {
@@ -98,13 +125,14 @@ function App() {
   return (
     <><div id="content" className="d-flex flex-column">
       <Cabecera 
-          className="cabecera" 
-          toggleCart={toggleCart} 
-          title="Nimbus Aviation" 
-          isOnline={isOnline}
-          seccionActiva={seccionActiva}
-          cambiarSeccion={cambiarSeccion} 
-        />
+        toggleCart={toggleCart}
+        title="Nimbus Aviation"
+        isOnline={isOnline}
+        seccionActiva={seccionActiva}
+        cambiarSeccion={cambiarSeccion}
+        usuario={usuario}
+      />
+
 
       <Carrito className="carro" carrito={carrito} updateCartItem={updateCartItem} show={showCart} onHide={() => setShowCart(false)} />
 
@@ -127,9 +155,14 @@ function App() {
 
             {seccionActiva === "mi-cuenta" && <MiCuenta />}
             
-            {seccionActiva === "anadir-producto" && <AnadirProducto addProduct={addProduct} isOnline={isOnline} />}
+            {seccionActiva === "anadir-producto" && usuario?.rol === "admin" && (
+              <AnadirProducto addProduct={addProduct} isOnline={isOnline} recargarProductos={recargarProductos} />
+            )}
             
-            {seccionActiva === "editar-productos" && <EditarYBorrarProductos productos={initialProductos} addProduct={addProduct} isOnline={isOnline} />}
+            {seccionActiva === "editar-productos" && usuario?.rol === "admin" && (
+              <EditarYBorrarProductos productos={initialProductos} addProduct={addProduct} isOnline={isOnline} />
+            )}
+
           
           {/* Formulario de login (siempre visible) - Lado derecho */}
           <div className="col-md-4">

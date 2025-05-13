@@ -1,6 +1,6 @@
 import React from "react"
 
-function MenuNavegacion({ toggleCart, seccionActiva, cambiarSeccion }) {
+function MenuNavegacion({ toggleCart, seccionActiva, cambiarSeccion, usuario }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark">
       <div className="container-fluid">
@@ -25,27 +25,33 @@ function MenuNavegacion({ toggleCart, seccionActiva, cambiarSeccion }) {
                 Mi cuenta
               </button>
             </li>
-            <li className="nav-item">
-              <button 
-                className={`nav-link btn btn-link ${seccionActiva === "anadir-producto" ? "active" : ""}`} 
-                onClick={() => cambiarSeccion("anadir-producto")}
-              >
-                Añadir un producto
-              </button>
-            </li>
-            <li className="nav-item">
-              <button 
-                className={`nav-link btn btn-link ${seccionActiva === "editar-productos" ? "active" : ""}`}
-                onClick={() => cambiarSeccion("editar-productos")}
-              >
-                Editar/Borrar productos
-              </button>
-            </li>
+            {usuario?.rol === "admin" && (
+              <>
+                <li className="nav-item">
+                  <button 
+                    className={`nav-link btn btn-link ${seccionActiva === "anadir-producto" ? "active" : ""}`} 
+                    onClick={() => cambiarSeccion("anadir-producto")}
+                  >
+                    Añadir un producto
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button 
+                    className={`nav-link btn btn-link ${seccionActiva === "editar-productos" ? "active" : ""}`} 
+                    onClick={() => cambiarSeccion("editar-productos")}
+                  >
+                    Editar/Borrar productos
+                  </button>
+                </li>
+              </>
+            )}
+            
             <li className="nav-item">
               <button className="nav-link btn btn-link" onClick={toggleCart}>
                 Carrito
               </button>
             </li>
+
           </ul>
         </div>
       </div>

@@ -23,7 +23,10 @@ function UserPanel() {
         credentials: "include"
       });
 
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200); // Espera 200 ms antes de recargar
+      
     } catch (err) {
       console.error("Error al cerrar sesión:", err);
     }

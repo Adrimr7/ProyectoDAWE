@@ -2,11 +2,18 @@ import React, { useState, useEffect } from "react";
 
 function MiCuenta() {
   const [usuario, setUsuario] = useState(null);
-  const [datos, setDatos] = useState(null);
   const [editando, setEditando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
   const isOffline = !navigator.onLine;
+  const [datos, setDatos] = useState({
+    nombre: "",
+    direccion: "",
+    telefono: "",
+    fechaNacimiento: "",
+    email: ""
+  });
+
 
   useEffect(() => {
     fetch("http://localhost:5000/usuarios/me", { credentials: "include" })
@@ -21,9 +28,12 @@ function MiCuenta() {
             fechaNacimiento: data.fechaNacimiento?.substring(0, 10) || "",
             email: data.email || ""
           });
+        } else {
+          setUsuario(null); // No hay sesión
         }
       });
   }, []);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,22 +45,43 @@ function MiCuenta() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (!datos.nombre.trim()) {
       setError("El nombre no puede estar vacío");
       setTimeout(() => setError(""), 3000);
       return;
     }
-
+  
     const res = await fetch(`http://localhost:5000/usuarios/${usuario.userId}`, {
       method: "PUT",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(datos)
     });
-
+  
     if (res.ok) {
       setMensaje("Datos actualizados correctamente");
       setEditando(false);
+    
+      // ✅ Vuelve a obtener los datos del usuario tras la actualización
+      const resUsuario = await fetch("http://localhost:5000/usuarios/me", {
+        credentials: "include"
+      });
+    
+      if (resUsuario.ok) {
+        const updated = await resUsuario.json();
+        setUsuario(updated);
+        setDatos({
+          nombre: updated.nombre || "",
+          direccion: updated.direccion || "",
+          telefono: updated.telefono || "",
+          fechaNacimiento: updated.fechaNacimiento?.substring(0, 10) || "",
+          email: updated.email || ""
+        });
+      }
+    
       setTimeout(() => setMensaje(""), 3000);
     } else {
       setError("Error al actualizar");
@@ -58,10 +89,6 @@ function MiCuenta() {
     }
   };
 
-  // ✅ Protección ante datos no cargados
-  if (!usuario || !datos) {
-    return <p>Cargando datos de usuario...</p>;
-  }
 
   return (
     <div id="mi-cuenta" className="col-md-8">
@@ -70,9 +97,11 @@ function MiCuenta() {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Información personal</h5>
-            <p><strong>Nombre:</strong> {usuario.nombre}</p>
-            <p><strong>Email:</strong> {usuario.email}</p>
-            <p><strong>Dirección:</strong> {usuario.direccion}</p>
+            <p><strong>Nombre:</strong> {datos.nombre || "No disponible"}</p>
+            <p><strong>Email:</strong> {datos.email || "No disponible"}</p>
+            <p><strong>Dirección:</strong> {datos.direccion || "No disponible"}</p>
+            <p><strong>Teléfono:</strong> {datos.telefono || "No disponible"}</p>
+            <p><strong>Fecha de nacimiento:</strong> {datos.fechaNacimiento || "No disponible"}</p>                  
             <button className="btn btn-primary" onClick={() => setEditando(true)}>
               Editar información
             </button>
@@ -145,10 +174,18 @@ function MiCuenta() {
                   disabled={isOffline}
                 />
               </div>
-              <button type="submit" className="btn btn-success me-2">Guardar</button>
+              <button type="submit" className="btn btn-success me-2" disabled={!usuario}>
+                Guardar
+              </button>
               <button type="button" className="btn btn-secondary" onClick={() => {
                 setEditando(false);
-                setDatos({ ...usuario });
+                setDatos({
+                  nombre: usuario?.nombre || "",
+                  direccion: usuario?.direccion || "",
+                  telefono: usuario?.telefono || "",
+                  fechaNacimiento: usuario?.fechaNacimiento?.substring(0, 10) || "",
+                  email: usuario?.email || ""
+                });
               }}>
                 Cancelar
               </button>

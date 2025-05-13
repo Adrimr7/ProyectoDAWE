@@ -1,5 +1,15 @@
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
+import multer from "multer";
+import path from "path";
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "public/uploads"),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
+});
+const upload = multer({ storage });
+
 
 const router = Router();
 
@@ -29,22 +39,45 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/productos (admin)
-router.post('/', soloAdmin, async (req, res) => {
-  const { tipo, nombre, precio, descripcion, imagen, stock } = req.body;
-  if (!nombre || typeof precio !== 'number') {
-    return res.status(400).json({ error: 'Faltan campos obligatorios' });
-  }
+router.post("/", soloAdmin, upload.single("imagen"), async (req, res) => {
   try {
-    const nuevo = { tipo, nombre, precio, descripcion, imagen, stock: stock || 0 };
-    const result = await req.app.locals.db
-      .collection('productos')
-      .insertOne(nuevo);
-    res.status(201).json({ _id: result.insertedId, ...nuevo });
+    const { tipo, nombre, precio, descripcion, extra } = req.body;
+    const imagen = req.file ? `uploads/${req.file.filename}` : "imagenes/no-image.png";
+
+    if (!nombre || !precio || !descripcion) {
+      return res.status(400).json({ error: "Faltan campos obligatorios." });
+    }
+
+    const nuevoProducto = {
+      tipo,
+      nombre,
+      precio: parseFloat(precio),
+      descripcion,
+      imagen
+    };
+
+    // Interpretar campo extra según tipo
+    if (extra) {
+      if (["Jet Grande", "Jet Mediano", "Jet Pequeño"].includes(tipo)) {
+        nuevoProducto.num_pasajeros = parseInt(extra);
+      } else if (tipo === "Avioneta") {
+        nuevoProducto.alcance_km = parseFloat(extra);
+      } else if (tipo === "Helicóptero") {
+        nuevoProducto.facilidades = extra.split(",").map(f => f.trim());
+      }
+    }
+
+    const db = req.app.locals.db;
+    await db.collection("productos").insertOne(nuevoProducto);
+
+    res.status(201).json(nuevoProducto);
   } catch (err) {
-    console.error('Error en POST /productos:', err);
-    res.status(500).json({ error: 'Error al crear producto' });
+    console.error("Error al crear producto:", err);
+    res.status(500).json({ error: "Error interno al crear producto." });
   }
 });
+
+
 
 // PUT /api/productos/:id (admin)
 router.put('/:id', soloAdmin, async (req, res) => {

@@ -2,6 +2,9 @@ import { MongoClient } from 'mongodb';
 import session from 'express-session';
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
+import multer from "multer";
+import path from "path";
+
 
 import usuariosRuta from './rutas/usuarios.js';
 import productosRuta from './rutas/productos.js';
@@ -14,6 +17,22 @@ const serviceAccount = require("./firebase-adminsdk.json");
 
 var aplicacion = express();
 
+
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/uploads");
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  }
+});
+const upload = multer({ storage });
+
+
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
@@ -24,8 +43,9 @@ var PUERTO = process.env.PORT || 5000;
 var LINK_DB = process.env.MONGO_URI || 'mongodb://admin:admin@localhost:27017/tienda?authSource=admin';
 
 
+
 // Middleware
-aplicacion.use(express.static('public'));
+aplicacion.use(express.static("public"));
 aplicacion.use(express.json());
 aplicacion.use(express.urlencoded({extended: false})); 
 

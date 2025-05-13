@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
 
 // Ruta para obtener datos del usuario autenticado
 router.get("/me", async (req, res) => {
-  if (!req.session.userId) {
+  if (!req.session || !req.session.userId) {
     return res.status(401).json({ error: "No autenticado" });
   }
 
@@ -96,21 +96,26 @@ router.get("/me", async (req, res) => {
 // Ruta para actualizar datos del usuario
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  if (!req.session.userId || req.session.userId !== id) {
+
+  // ✅ Depuración: compara siempre como string
+  if (!req.session.userId || req.session.userId.toString() !== id.toString()) {
     return res.status(403).json({ error: "No autorizado" });
   }
 
   const { nombre, direccion, telefono, fechaNacimiento } = req.body;
+
   if (!nombre || !nombre.trim()) {
     return res.status(400).json({ error: "Nombre requerido" });
   }
 
   const db = req.app.locals.db;
+
   await db.collection("usuarios").updateOne(
     { _id: new ObjectId(id) },
     { $set: { nombre, direccion, telefono, fechaNacimiento } }
   );
 
+  // ✅ Opcional: actualiza también los datos en sesión
   req.session.nombre = nombre;
   req.session.direccion = direccion;
   req.session.telefono = telefono;
@@ -126,6 +131,7 @@ router.put("/:id", async (req, res) => {
     fechaNacimiento
   });
 });
+
 
 // Ruta para logout
 router.post("/logout", (req, res) => {
