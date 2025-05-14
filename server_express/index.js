@@ -74,11 +74,11 @@ aplicacion.use(session({
   }),
   // cookies
   cookie: {
-    secure: false,
+    secure: false, 
     httpOnly: true,
     sameSite: 'lax',
     maxAge: 1000 * 60 * 60 * 24,
-  }
+}
 }));
 
 aplicacion.use((req, res, next) => {
@@ -130,25 +130,5 @@ async function iniciarServidor() {
     process.exit(1);
   }
 }
-
-// POST /usuarios/anadir-visita
-aplicacion.post('/usuarios/anadir-visita', (solicitud, respuesta) => {
-  if (solicitud.session.email) {
-    if (!solicitud.session.visitas) {
-      solicitud.session.visitas = 1;
-    } else {
-      solicitud.session.visitas += 1;
-    }
-    solicitud.session.save(err => {
-      if (err) {
-        console.error('Error al guardar sesión:', err);
-        return respuesta.status(500).json({ error: 'Error al incrementar visitas' });
-      }
-      respuesta.json({ visitas: solicitud.session.visitas });
-    });
-  } else {
-    respuesta.status(401).json({ error: 'No hay sesión activa' });
-  }
-});
 
 iniciarServidor();

@@ -25,6 +25,7 @@ function App() {
   const [seccionActiva, setSeccionActiva] = useState("inicio")
   const [usuario, setUsuario] = useState(null);
   const [autenticado, setAutenticado] = useState(false);
+  const [loadingSession, setLoadingSession] = useState(true);
 
 
   useEffect(() => {
@@ -46,20 +47,28 @@ function App() {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => setAutenticado(data.autenticado))
-      .catch(() => setAutenticado(false));
+      .then((data) => {
+        setAutenticado(data.autenticado);
+        setLoadingSession(false);
+      })
+      .catch(() => {
+        setAutenticado(false);
+        setLoadingSession(false);
+      });
   }, []);
   
 
-
-
   useEffect(() => {
-    fetch("http://localhost:5000/usuarios/me", {
-      credentials: "include"
-    })
-      .then(res => res.ok ? res.json() : null)
-      .then(data => setUsuario(data));
-  }, []);
+    if (autenticado) {
+      fetch("http://localhost:5000/usuarios/me", {
+        credentials: "include",
+      })
+        .then((res) => res.ok ? res.json() : null)
+        .then((data) => setUsuario(data));
+    } else {
+      setUsuario(null); // Cuando no hay sesión, limpiamos datos de usuario
+    }
+  }, [autenticado]);
 
 
   //Cargar el carrito desde localStorage al inicio
@@ -135,6 +144,8 @@ function App() {
   const cambiarSeccion = (seccion) => {
     setSeccionActiva(seccion);
   }
+
+  if (loadingSession) return <div>Cargando sesión...</div>;
   
   return (
     <><div id="content" className="d-flex flex-column">

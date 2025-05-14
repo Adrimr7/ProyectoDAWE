@@ -10,50 +10,64 @@ router.get("/comprobar-sesion", (req, res) => {
 // Ruta para login con Firebase
 router.post("/login", async (req, res) => {
   try {
-    const { idToken } = req.body;
-    if (!idToken) return res.status(400).json({ error: "Token no proporcionado" });
+    // Regenera la sesión para evitar conflictos con sesiones anteriores
+    req.session.regenerate(async (err) => {
+      if (err) {
+        console.error("Error al regenerar la sesión:", err);
+        return res.status(500).json({ error: "Error al regenerar la sesión" });
+      }
 
-    const { getAuth } = await import("firebase-admin/auth");
-    const auth = getAuth();
-    const decodedToken = await auth.verifyIdToken(idToken);
+      const { idToken } = req.body;
+      if (!idToken) return res.status(400).json({ error: "Token no proporcionado" });
 
-    const email = decodedToken.email;
-    const db = req.app.locals.db;
+      const { getAuth } = await import("firebase-admin/auth");
+      const auth = getAuth();
+      const decodedToken = await auth.verifyIdToken(idToken);
 
-    let usuario = await db.collection("usuarios").findOne({ email });
+      const email = decodedToken.email;
+      const db = req.app.locals.db;
 
-    if (!usuario) {
-      const nuevoUsuario = {
-        email,
-        nombre: email.split("@")[0],
-        rol: "",
-        visitas: 1,
-        telefono: "",
-        direccion: "",
-        fechaNacimiento: null
-      };
-      const resultado = await db.collection("usuarios").insertOne(nuevoUsuario);
-      usuario = { _id: resultado.insertedId, ...nuevoUsuario };
-    } else {
-      await db.collection("usuarios").updateOne(
-        { _id: usuario._id },
-        { $set: { visitas: 1 } }
-      );
-    }
+      let usuario = await db.collection("usuarios").findOne({ email });
 
-    req.session.userId = usuario._id.toString();
-    req.session.email = usuario.email;
-    req.session.nombre = usuario.nombre;
-    req.session.rol = usuario.rol;
+      if (!usuario) {
+        const nuevoUsuario = {
+          email,
+          nombre: email.split("@")[0],
+          rol: "",
+          visitas: 1,
+          telefono: "",
+          direccion: "",
+          fechaNacimiento: null,
+        };
+        const resultado = await db.collection("usuarios").insertOne(nuevoUsuario);
+        usuario = { _id: resultado.insertedId, ...nuevoUsuario };
+      } else {
+        await db.collection("usuarios").updateOne(
+          { _id: usuario._id },
+          { $set: { visitas: 1 } }
+        );
+      }
 
-    await req.session.save();
+      // Asigna los datos del usuario a la sesión
+      req.session.userId = usuario._id.toString();
+      req.session.email = usuario.email;
+      req.session.nombre = usuario.nombre;
+      req.session.rol = usuario.rol;
 
-    res.json({
-      userId: usuario._id.toString(),
-      email: usuario.email,
-      nombre: usuario.nombre,
-      rol: usuario.rol,
-      visitas: req.session.visitas
+      req.session.save((err) => {
+        if (err) {
+          console.error("Error al guardar la sesión:", err);
+          return res.status(500).json({ error: "Error al guardar la sesión" });
+        }
+
+        res.json({
+          userId: usuario._id.toString(),
+          email: usuario.email,
+          nombre: usuario.nombre,
+          rol: usuario.rol,
+          visitas: usuario.visitas,
+        });
+      });
     });
   } catch (err) {
     console.error("Error en POST /login:", err);
@@ -74,6 +88,7 @@ router.get("/me", async (req, res) => {
     return res.status(404).json({ error: "Usuario no encontrado" });
   }
 
+  // Incrementar siempre que se consulte (1 vez por recarga de página)
   if (typeof req.session.visitas === "undefined") {
     req.session.visitas = 1;
   } else {

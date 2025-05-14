@@ -5,9 +5,11 @@ function UserPanel({ onLogout }) {
   const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/usuarios/me", { credentials: "include" })
-      .then((res) => res.ok ? res.json() : null)
-      .then((data) => setUsuario(data))
+    fetch("http://localhost:5000/usuarios/me", {
+      credentials: "include"
+    })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setUsuario(data))
       .catch(() => setUsuario(null));
   }, []);
 
@@ -18,7 +20,9 @@ function UserPanel({ onLogout }) {
       method: "POST",
       credentials: "include",
     });
-    onLogout();  //Informa a App de que ha cerrado sesión
+    await new Promise(resolve => setTimeout(resolve, 300));
+    setUsuario(null);
+    onLogout(); 
   };
 
   if (!usuario) return <p>Cargando usuario...</p>;

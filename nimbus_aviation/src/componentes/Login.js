@@ -26,7 +26,11 @@ function Login({ onLogin }) {
       });
 
       if (!res.ok) throw new Error("Error al iniciar sesión");
-      onLogin();  //Actualiza estado en App directamente
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      //Indicar al componente padre (App.js) que ya estamos autenticados
+      onLogin(); 
 
     } catch (err) {
       setError("Credenciales incorrectas o error de conexión");
@@ -42,13 +46,29 @@ function Login({ onLogin }) {
         <form onSubmit={handleSubmit}>
           {error && <div className="alert alert-danger">{error}</div>}
           <div className="mb-3">
-            <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} placeholder="Email" />
+            <input 
+              type="email" 
+              className="form-control" 
+              name="email" 
+              value={formData.email} 
+              onChange={handleChange} 
+              placeholder="Email" 
+            />
           </div>
           <div className="mb-3">
-            <input type="password" className="form-control" name="password" value={formData.password} onChange={handleChange} placeholder="Contraseña" />
+            <input 
+              type="password" 
+              className="form-control" 
+              name="password" 
+              value={formData.password} 
+              onChange={handleChange} 
+              placeholder="Contraseña" 
+            />
           </div>
           <div className="d-grid">
-            <button type="submit" className="btn btn-primary">Iniciar sesión</button>
+            <button type="submit" className="btn btn-primary">
+              Iniciar sesión
+            </button>
           </div>
         </form>
       </div>
