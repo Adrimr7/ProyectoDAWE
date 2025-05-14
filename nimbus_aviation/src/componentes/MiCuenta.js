@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function MiCuenta({ usuario }) {
   const [editando, setEditando] = useState(false);
@@ -12,6 +12,27 @@ function MiCuenta({ usuario }) {
     fechaNacimiento: "",
     email: ""
   });
+
+  useEffect(() => {
+    if (usuario) {
+      setDatos({
+        nombre: usuario.nombre || "",
+        direccion: usuario.direccion || "",
+        telefono: usuario.telefono || "",
+        fechaNacimiento: usuario.fechaNacimiento?.substring(0, 10) || "",
+        email: usuario.email || ""
+      });
+    } else {
+      setDatos({
+        nombre: "",
+        direccion: "",
+        telefono: "",
+        fechaNacimiento: "",
+        email: ""
+      });
+    }
+  }, [usuario]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
