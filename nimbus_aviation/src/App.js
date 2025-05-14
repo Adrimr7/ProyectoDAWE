@@ -137,6 +137,17 @@ function App() {
     }
   };
 
+  const recargarUsuario = async () => {
+    const res = await fetch("http://localhost:5000/usuarios/me", {
+      credentials: "include",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setUsuario(data);
+    }
+  };
+
+
 
   const updateCartItem = (id, cantidad) => {
     setCarrito((prevCarrito) => {
@@ -199,7 +210,10 @@ function App() {
                 addToCart={addToCart} />
             )}
 
-            {seccionActiva === "mi-cuenta" && <MiCuenta usuario={usuario} />}
+            {seccionActiva === "mi-cuenta" && (
+              <MiCuenta usuario={usuario} recargarUsuario={recargarUsuario} />
+            )}
+
             
             {seccionActiva === "anadir-producto" && usuario?.rol === "admin" && (
               <AnadirProducto addProduct={addProduct} isOnline={isOnline} recargarProductos={recargarProductos} />

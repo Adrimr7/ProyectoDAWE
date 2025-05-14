@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function MiCuenta({ usuario }) {
+function MiCuenta({ usuario, recargarUsuario }) {
   const [editando, setEditando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
@@ -63,6 +63,9 @@ function MiCuenta({ usuario }) {
     if (res.ok) {
       setMensaje("Datos actualizados correctamente");
       setEditando(false);
+      if (typeof recargarUsuario === "function") {
+        await recargarUsuario();
+      }
       setTimeout(() => setMensaje(""), 3000);
     } else {
       setError("Error al actualizar");
