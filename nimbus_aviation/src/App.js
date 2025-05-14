@@ -117,6 +117,19 @@ function App() {
     })
   }
 
+  const borrarProducto = async (id) => {
+    const res = await fetch(`http://localhost:5000/productos/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      setInitialProductos(prev => prev.filter(p => p._id !== id));
+      setProductos(prev => prev.filter(p => p._id !== id));
+    }
+  };
+
+
   const updateCartItem = (id, cantidad) => {
     setCarrito((prevCarrito) => {
       const newCarrito = { ...prevCarrito }
@@ -185,7 +198,13 @@ function App() {
             )}
             
             {seccionActiva === "editar-productos" && usuario?.rol === "admin" && (
-              <EditarYBorrarProductos productos={initialProductos} addProduct={addProduct} isOnline={isOnline} />
+              <EditarYBorrarProductos
+                productos={initialProductos}
+                addProduct={addProduct}
+                isOnline={isOnline}
+                recargarProductos={recargarProductos}
+                borrarProducto={borrarProducto} // ← esto te falta
+              />
             )}
 
           

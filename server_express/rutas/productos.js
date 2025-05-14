@@ -80,28 +80,60 @@ router.post("/", soloAdmin, upload.single("imagen"), async (req, res) => {
 
 
 // PUT /api/productos/:id (admin)
-router.put('/:id', soloAdmin, async (req, res) => {
+router.put('/:id', soloAdmin, upload.single("imagen"), async (req, res) => {
   const { id } = req.params;
-  const { tipo, nombre, precio, descripcion, imagen, stock } = req.body;
-  if (!nombre) {
-    return res.status(400).json({ error: 'Nombre es obligatorio' });
+  const { tipo, nombre, precio, descripcion, extra } = req.body;
+
+  if (!nombre || !precio || !descripcion) {
+    return res.status(400).json({ error: 'Faltan campos obligatorios' });
   }
+
   try {
-    const update = { tipo, nombre, precio, descripcion };
-    if (imagen) update.imagen = imagen;
-    if (stock !== undefined) update.stock = stock;
+    const update = {
+      tipo,
+      nombre,
+      precio: parseFloat(precio),
+      descripcion
+    };
+
+    if (req.file) {
+      update.imagen = `uploads/${req.file.filename}`;
+    } else if (req.body.imagen) {
+      update.imagen = req.body.imagen;
+    }
+
+    // Interpretar campo extra según tipo
+    if (extra) {
+      if (["Jet Grande", "Jet Mediano", "Jet Pequeño"].includes(tipo)) {
+        update.num_pasajeros = parseInt(extra);
+        update.alcance_km = undefined;
+        update.facilidades = undefined;
+      } else if (tipo === "Avioneta") {
+        update.alcance_km = parseFloat(extra);
+        update.num_pasajeros = undefined;
+        update.facilidades = undefined;
+      } else if (tipo === "Helicóptero") {
+        update.facilidades = extra.split(",").map(f => f.trim());
+        update.num_pasajeros = undefined;
+        update.alcance_km = undefined;
+      }
+    }
+
     const result = await req.app.locals.db
       .collection('productos')
       .updateOne({ _id: new ObjectId(id) }, { $set: update });
+
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
-    res.json({ message: 'Producto actualizado' });
+
+    res.json({ actualizado: { _id: id, ...update } });
   } catch (err) {
     console.error('Error en PUT /productos/:id:', err);
     res.status(500).json({ error: 'Error al actualizar producto' });
   }
 });
+
 
 // DELETE /api/productos/:id (admin)
 router.delete('/:id', soloAdmin, async (req, res) => {
