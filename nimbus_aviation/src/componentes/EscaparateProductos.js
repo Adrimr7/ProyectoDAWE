@@ -125,7 +125,7 @@ function EscaparateProductos({
     }
 
     return (
-      <div className="col-md-4 mb-3" key={product.id}>
+      <div className="col-md-4 mb-3" key={product._id}>
         <div className="card h-100 position-relative">
           <img
             src={`http://localhost:5000/${product.imagen}`}
@@ -138,18 +138,22 @@ function EscaparateProductos({
           />
           <button
             className="btn btn-success agregar-carrito position-absolute top-0 end-0 m-2"
-            onClick={() => {
-              addToCart(product)
-              const btn = document.activeElement
-              const originalText = btn.innerHTML
-              btn.innerHTML = "Añadido!"
-              btn.disabled = true
+            onClick={(e) => {
+              e.stopPropagation(); // 🔒 Evita propagación que cause ejecución doble
+              const btn = e.currentTarget;
+
+              addToCart(product);
+
+              const originalText = btn.innerHTML;
+              btn.innerHTML = "Añadido!";
+              btn.disabled = true;
+
               setTimeout(() => {
-                btn.innerHTML = originalText
-                btn.disabled = false
-              }, 2000)
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+              }, 2000);
             }}
-            data-id={product.id}
+            data-id={product._id}
             data-nombre={product.nombre}
             data-precio={product.precio}
             data-img={product.imagen}

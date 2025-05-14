@@ -79,10 +79,11 @@ function App() {
 
   //Guardar el carrito en localStorage cada vez que cambie
   useEffect(() => {
-    Object.keys(carrito).forEach((productoId) => {
-      guardarEnCarrito(productoId, carrito[productoId])
-    })
-  }, [carrito])
+    Object.entries(carrito).forEach(([id, producto]) => {
+      guardarEnCarrito(id, producto);
+    });
+  }, [carrito]);
+
 
   //Manejar el estado de conexión
   useEffect(() => {
@@ -99,23 +100,30 @@ function App() {
   }, [])
 
   const addToCart = (product) => {
+    const id = product._id;
+
     setCarrito((prevCarrito) => {
-      const newCarrito = { ...prevCarrito }
-      if (!newCarrito[product.id]) {
-        newCarrito[product.id] = {
+      const newCarrito = { ...prevCarrito };
+
+      if (!newCarrito[id]) {
+        newCarrito[id] = {
           nombre: product.nombre,
           precio: product.precio,
           cantidad: 1,
           img: product.imagen,
-        }
-      } else if (newCarrito[product.id].cantidad < 20) {
-        newCarrito[product.id].cantidad++
+        };
+      } else if (newCarrito[id].cantidad < 20) {
+        newCarrito[id] = {
+          ...newCarrito[id],
+          cantidad: newCarrito[id].cantidad + 1
+        };
       }
 
-      guardarEnCarrito(product.id, newCarrito[product.id]) // Guardar en localStorage
-      return newCarrito
-    })
-  }
+      return newCarrito;
+    });
+  };
+
+
 
   const borrarProducto = async (id) => {
     const res = await fetch(`http://localhost:5000/productos/${id}`, {
