@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-function MiCuenta() {
-  const [usuario, setUsuario] = useState(null);
+function MiCuenta({ usuario }) {
   const [editando, setEditando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
@@ -14,27 +13,6 @@ function MiCuenta() {
     email: ""
   });
 
-
-  useEffect(() => {
-    fetch("http://localhost:5000/usuarios/me", { credentials: "include" })
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data) {
-          setUsuario(data);
-          setDatos({
-            nombre: data.nombre || "",
-            direccion: data.direccion || "",
-            telefono: data.telefono || "",
-            fechaNacimiento: data.fechaNacimiento?.substring(0, 10) || "",
-            email: data.email || ""
-          });
-        } else {
-          setUsuario(null); // No hay sesión
-        }
-      });
-  }, []);
-
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setDatos(prev => ({
@@ -45,13 +23,13 @@ function MiCuenta() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!datos.nombre.trim()) {
       setError("El nombre no puede estar vacío");
       setTimeout(() => setError(""), 3000);
       return;
     }
-  
+
     const res = await fetch(`http://localhost:5000/usuarios/${usuario.userId}`, {
       method: "PUT",
       credentials: "include",
@@ -60,34 +38,17 @@ function MiCuenta() {
       },
       body: JSON.stringify(datos)
     });
-  
+
     if (res.ok) {
       setMensaje("Datos actualizados correctamente");
       setEditando(false);
-    
-      // ✅ Vuelve a obtener los datos del usuario tras la actualización
-      const resUsuario = await fetch("http://localhost:5000/usuarios/me", {
-        credentials: "include"
-      });
-    
-      if (resUsuario.ok) {
-        const updated = await resUsuario.json();
-        setUsuario(updated);
-        setDatos({
-          nombre: updated.nombre || "",
-          direccion: updated.direccion || "",
-          telefono: updated.telefono || "",
-          fechaNacimiento: updated.fechaNacimiento?.substring(0, 10) || "",
-          email: updated.email || ""
-        });
-      }
-    
       setTimeout(() => setMensaje(""), 3000);
     } else {
       setError("Error al actualizar");
       setTimeout(() => setError(""), 3000);
     }
   };
+
 
 
   return (

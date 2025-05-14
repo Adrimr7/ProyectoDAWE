@@ -1,17 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { getAuth, signOut } from "firebase/auth";
 
-function UserPanel({ onLogout }) {
-  const [usuario, setUsuario] = useState(null);
-
-  useEffect(() => {
-    fetch("http://localhost:5000/usuarios/me", {
-      credentials: "include"
-    })
-      .then(res => res.ok ? res.json() : null)
-      .then(data => setUsuario(data))
-      .catch(() => setUsuario(null));
-  }, []);
+function UserPanel({ onLogout, usuario }) {
 
   const handleLogout = async () => {
     const auth = getAuth();
@@ -21,7 +11,6 @@ function UserPanel({ onLogout }) {
       credentials: "include",
     });
     await new Promise(resolve => setTimeout(resolve, 300));
-    setUsuario(null);
     onLogout(); 
   };
 

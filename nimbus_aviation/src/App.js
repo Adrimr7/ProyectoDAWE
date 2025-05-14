@@ -191,7 +191,7 @@ function App() {
                 addToCart={addToCart} />
             )}
 
-            {seccionActiva === "mi-cuenta" && <MiCuenta />}
+            {seccionActiva === "mi-cuenta" && <MiCuenta usuario={usuario} />}
             
             {seccionActiva === "anadir-producto" && usuario?.rol === "admin" && (
               <AnadirProducto addProduct={addProduct} isOnline={isOnline} recargarProductos={recargarProductos} />
@@ -210,7 +210,7 @@ function App() {
           
           {/* Formulario de login (siempre visible) - Lado derecho */}
           <div className="col-md-4">
-            <PanelLateral autenticado={autenticado} setAutenticado={setAutenticado} />
+            <PanelLateral usuario={usuario} autenticado={autenticado} setAutenticado={setAutenticado} />
           </div>
         </div>
       </div>
