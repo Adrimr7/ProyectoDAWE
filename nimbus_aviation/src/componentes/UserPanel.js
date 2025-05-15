@@ -5,7 +5,7 @@ function UserPanel({ onLogout, usuario }) {
   const handleLogout = async () => {
     const auth = getAuth();
     await signOut(auth);
-    await fetch("http://localhost:5000/usuarios/logout", {
+    await fetch("http://134.122.104.67:5000/usuarios/logout", {
       method: "POST",
       credentials: "include",
     });

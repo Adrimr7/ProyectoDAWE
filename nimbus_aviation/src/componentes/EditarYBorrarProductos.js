@@ -10,7 +10,7 @@ function EditarYBorrarProductos({ borrarProducto, productos, isOnline, recargarP
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:5000/productos", { credentials: "include" })
+    fetch("http://134.122.104.67:5000/productos", { credentials: "include" })
       .then(res => res.ok ? res.json() : [])
       .then(data => setProductosModificados(data));
   }, []);
@@ -54,7 +54,7 @@ function EditarYBorrarProductos({ borrarProducto, productos, isOnline, recargarP
       headers = { "Content-Type": "application/json" };
     }
 
-    const res = await fetch(`http://localhost:5000/productos/${id}`, {
+    const res = await fetch(`http://134.122.104.67:5000/productos/${id}`, {
       method: "PUT",
       credentials: "include",
       headers,
@@ -73,7 +73,7 @@ function EditarYBorrarProductos({ borrarProducto, productos, isOnline, recargarP
   };
 
   const borrarSeleccionados = async () => {
-    const res = await fetch("http://localhost:5000/productos", {
+    const res = await fetch("http://134.122.104.67:5000/productos", {
       method: "DELETE",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -105,7 +105,7 @@ function EditarYBorrarProductos({ borrarProducto, productos, isOnline, recargarP
         src={
           product.imagen?.startsWith("http")
             ? product.imagen
-            : `http://localhost:5000/${product.imagen}`
+            : `http://134.122.104.67:5000/${product.imagen}`
         }
         alt={product.nombre}
         className="me-3"

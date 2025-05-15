@@ -33,7 +33,7 @@ function App() {
   }, [initialProductos]);  
   
   const recargarProductos = async () => {
-    const res = await fetch("http://localhost:5000/productos");
+    const res = await fetch("http://134.122.104.67:5000/productos");
     const data = await res.json();
     setInitialProductos(data);
   };
@@ -43,7 +43,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:5000/comprobar-sesion", {
+    fetch("http://134.122.104.67:5000/comprobar-sesion", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -60,7 +60,7 @@ function App() {
 
   useEffect(() => {
     if (autenticado) {
-      fetch("http://localhost:5000/usuarios/me", {
+      fetch("http://134.122.104.67:5000/usuarios/me", {
         credentials: "include",
       })
         .then((res) => res.ok ? res.json() : null)
@@ -126,7 +126,7 @@ function App() {
 
 
   const borrarProducto = async (id) => {
-    const res = await fetch(`http://localhost:5000/productos/${id}`, {
+    const res = await fetch(`http://134.122.104.67:5000/productos/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
@@ -138,7 +138,7 @@ function App() {
   };
 
   const recargarUsuario = async () => {
-    const res = await fetch("http://localhost:5000/usuarios/me", {
+    const res = await fetch("http://134.122.104.67:5000/usuarios/me", {
       credentials: "include",
     });
     if (res.ok) {
