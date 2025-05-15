@@ -40,7 +40,7 @@ admin.initializeApp({
 var PUERTO = process.env.PORT || 5000;
 
 // conexion a mongo???
-var LINK_DB = process.env.MONGO_URI || 'mongodb://admin:admin@localhost:27017/tienda?authSource=admin';
+var LINK_DB = process.env.MONGO_URI || 'mongodb://admin:admin@mongo:27017/tienda?authSource=admin';
 
 
 
