@@ -77,7 +77,6 @@ function MiCuenta({ usuario, recargarUsuario }) {
 
   return (
     <div id="mi-cuenta" className="col-md-8">
-      <h2 className="mb-4">Mi cuenta</h2>
       {!editando ? (
         <div className="card">
           <div className="card-body">
@@ -87,7 +86,7 @@ function MiCuenta({ usuario, recargarUsuario }) {
             <p><strong>Dirección:</strong> {datos.direccion || "No disponible"}</p>
             <p><strong>Teléfono:</strong> {datos.telefono || "No disponible"}</p>
             <p><strong>Fecha de nacimiento:</strong> {datos.fechaNacimiento || "No disponible"}</p>                  
-            <button className="btn btn-primary" onClick={() => setEditando(true)}>
+            <button className="btn btn-primary" onClick={() => setEditando(true)} disabled={isOffline}>
               Editar información
             </button>
           </div>

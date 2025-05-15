@@ -122,11 +122,22 @@ function EditarYBorrarProductos({ borrarProducto, productos, isOnline, recargarP
         >
           Editar
         </button>
-      )}
+      )}  
 
 
       {product._id === editandoId && (
         <form onSubmit={(e) => guardarCambios(e, product._id)} className="w-100 mt-3">
+          <div className="justify-content-end">
+            <button
+              type="button"
+              onClick={() => setEditandoId(null)}
+              className="btn btn-link text-danger p-0 m-0 mb-2"
+              style={{ fontSize: "0.9rem", textDecoration: "underline", cursor: "pointer" }}
+            >
+              Cerrar 
+            </button>
+          </div>
+
           <select className="form-control mb-2" disabled value={formData.tipo || ""}>
             <option value="Jet Grande">Jet Grande</option>
             <option value="Jet Mediano">Jet Mediano</option>
@@ -197,13 +208,6 @@ function EditarYBorrarProductos({ borrarProducto, productos, isOnline, recargarP
           <div className="mt-2">
             <button type="submit" className="btn btn-success btn-sm" disabled={!isOnline}>
               Guardar cambios
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={() => setEditandoId(null)}
-            >
-              Cancelar
             </button>
           </div>
 

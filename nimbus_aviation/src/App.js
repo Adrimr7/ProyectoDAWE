@@ -193,9 +193,9 @@ function App() {
 
       <Carrito className="carro" carrito={carrito} updateCartItem={updateCartItem} show={showCart} onHide={() => setShowCart(false)} />
 
-      <div className="container mt-4">
+      <div className="container mt-4 flex-grow-1">
         <div className="row">
-          {/* Contenido principal (cambia según la sección) - Lado izquierdo */}
+          {/* Contenido principal  Lado izquierdo */}
             {seccionActiva === "inicio" && (
               <EscaparateProductos id="escaparate"
                 productos={productos}
@@ -225,12 +225,12 @@ function App() {
                 addProduct={addProduct}
                 isOnline={isOnline}
                 recargarProductos={recargarProductos}
-                borrarProducto={borrarProducto} // ← esto te falta
+                borrarProducto={borrarProducto} 
               />
             )}
 
           
-          {/* Formulario de login (siempre visible) - Lado derecho */}
+          {/* Formulario de login - Lado derecho */}
           <div className="col-md-4">
             <PanelLateral usuario={usuario} autenticado={autenticado} setAutenticado={setAutenticado} />
           </div>
