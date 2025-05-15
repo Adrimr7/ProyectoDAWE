@@ -50,7 +50,7 @@ function Carrito({ carrito, updateCartItem, show, onHide }) {
             <p>No hay productos en el carrito</p>
           ) : (
             Object.entries(carrito).map(([id, { nombre, precio, cantidad, img }]) => (
-              <div className="d-flex align-items-center mb-3" key={id}>
+              <div className="d-flex1 align-items-center mb-3" key={id}>
                 <img src={img || "/placeholder.svg"} width="140" className="me-3" alt={nombre} />
                 <div>
                   <h6>{nombre}</h6>
