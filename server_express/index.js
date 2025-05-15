@@ -55,7 +55,7 @@ aplicacion.use(urlencoded({ extended: true, limit: '40mb' }));
 // config de CORS
 aplicacion.use(cors({
   // permitir los origenes
-  origin: ['http://localhost:3000', 'http://localhost:5000', 'http://134.122.104.67:3000/', 'http://134.122.104.67:5000/'],
+  origin: ['http://localhost:3000', 'http://localhost:5000', 'http://134.122.104.67:3000', 'http://134.122.104.67:5000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
