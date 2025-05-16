@@ -63,7 +63,7 @@ function FormularioNuevosProductos({ addProduct, isOnline, recargarProductos }) 
     formData.append("extra", extra);
 
     try {
-      const respuesta = await fetch("http://134.122.104.67:5000/productos", {
+      const respuesta = await fetch("/api/productos", {
         method: "POST",
         credentials: "include",
         body: formData

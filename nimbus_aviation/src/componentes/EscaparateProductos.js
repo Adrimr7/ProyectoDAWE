@@ -128,7 +128,7 @@ function EscaparateProductos({
       <div className="col-md-4 mb-3" key={product._id}>
         <div className="card h-100 position-relative">
           <img
-            src={`http://134.122.104.67:5000/${product.imagen}`}
+            src={`/api/${product.imagen}`}
             className="card-img-top product-image"
             alt={product.nombre}
             onClick={() => openProductDetails(product)}

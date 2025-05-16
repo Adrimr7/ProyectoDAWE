@@ -87,8 +87,8 @@ aplicacion.use((req, res, next) => {
 });
 
 
-aplicacion.use('/usuarios', usuariosRuta);
-aplicacion.use('/productos', productosRuta);
+aplicacion.use('/api/usuarios', usuariosRuta);
+aplicacion.use('/api/productos', productosRuta);
 
 // GET / (comprobar app)
 aplicacion.get('/', (solicitud, respuesta) => {

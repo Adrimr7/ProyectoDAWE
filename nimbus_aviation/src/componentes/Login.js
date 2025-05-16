@@ -18,7 +18,7 @@ function Login({ onLogin }) {
       const userCred = await signInWithEmailAndPassword(auth, formData.email, formData.password);
       const idToken = await userCred.user.getIdToken();
 
-      const res = await fetch("http://134.122.104.67:5000/usuarios/login", {
+      const res = await fetch("/api/usuarios/login", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

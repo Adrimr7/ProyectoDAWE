@@ -51,7 +51,7 @@ function MiCuenta({ usuario, recargarUsuario }) {
       return;
     }
 
-    const res = await fetch(`http://134.122.104.67:5000/usuarios/${usuario.userId}`, {
+    const res = await fetch(`/api/usuarios/${usuario.userId}`, {
       method: "PUT",
       credentials: "include",
       headers: {
