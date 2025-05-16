@@ -4,8 +4,8 @@ import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 import multer from "multer";
 import path from "path";
-
-
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import usuariosRuta from './rutas/usuarios.js';
 import productosRuta from './rutas/productos.js';
 import  MongoStore  from 'connect-mongo';
@@ -46,6 +46,12 @@ var LINK_DB = process.env.MONGO_URI || 'mongodb://admin:admin@mongo:27017/tienda
 
 // Middleware
 aplicacion.use(express.static("public"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Esto sirve las imágenes desde public/imagenes
+aplicacion.use('/api/imagenes', express.static(path.join(__dirname, 'public/imagenes')));
+
 aplicacion.use(express.json());
 aplicacion.use(express.urlencoded({extended: false})); 
 
@@ -100,18 +106,6 @@ aplicacion.get('/', (solicitud, respuesta) => {
       visitas: solicitud.session.visitas || 0,
     } : 'No hay sesion activa'
   });
-});
-
-// GET /comprobar-sesion 
-aplicacion.get('/comprobar-sesion', (solicitud, respuesta) => {
-  if (solicitud.session.email) {
-    respuesta.json({ 
-      autenticado: true, 
-      email: solicitud.session.email,
-    });
-  } else {
-    respuesta.json({ autenticado: false });
-  }
 });
 
 // config de iniciar servidor
