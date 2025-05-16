@@ -45,7 +45,7 @@ function DetallesProducto({ product, show, onHide }) {
               <div className="col-md-6">
                 <img
                   id="modalImage"
-                  src={product.imagen || "/placeholder.svg"}
+                  src={`/api/${product.imagen}` || "/placeholder.svg"}
                   className="img-fluid"
                   alt={product.nombre}
                 />
