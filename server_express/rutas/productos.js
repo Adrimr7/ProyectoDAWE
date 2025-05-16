@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
 router.post("/", soloAdmin, upload.single("imagen"), async (req, res) => {
   try {
     const { tipo, nombre, precio, descripcion, extra } = req.body;
-    const imagen = req.file ? `uploads/${req.file.filename}` : "imagenes/no-image.png";
+    const imagen = req.file ? `api/uploads/${req.file.filename}` : "imagenes/no-image.png";
 
     if (!nombre || !precio || !descripcion) {
       return res.status(400).json({ error: "Faltan campos obligatorios." });
