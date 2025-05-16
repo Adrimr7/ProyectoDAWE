@@ -50,7 +50,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // Esto sirve las imágenes desde public/imagenes
 aplicacion.use('/api/imagenes', express.static(path.join(__dirname, 'public/imagenes')));
-app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
+aplicacion.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 aplicacion.use(express.json());
 aplicacion.use(express.urlencoded({extended: false})); 
